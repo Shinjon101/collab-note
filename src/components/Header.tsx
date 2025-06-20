@@ -16,7 +16,7 @@ const Header = () => {
       {user && (
         <h1 className="tex-2xl font-bold">
           {user?.firstName}
-          {`'s`} Space
+          {`'s`} Notes
         </h1>
       )}
 
