@@ -1,24 +1,22 @@
-import React from "react";
+import { getUserDocs } from "../../actions/getUserDocuments";
+import SidebarDocuments from "../components/SideBarDocuments"; // adjust import if needed
 import NewDocumentButton from "./NewDocumentButton";
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { MenuIcon } from "lucide-react";
-import SidebarDocuments from "./SideBarDocuments";
 
-const SideBar = () => {
+export default async function SideBar() {
+  const docs = await getUserDocs();
+
   const menuOptions = (
     <>
       <NewDocumentButton />
-      <SidebarDocuments />
-      {/*Created docs*/}
-
-      {/*Later invited on docs*/}
+      <SidebarDocuments docs={docs} />
     </>
   );
 
@@ -44,6 +42,4 @@ const SideBar = () => {
       <div className="hidden md:inline">{menuOptions}</div>
     </div>
   );
-};
-
-export default SideBar;
+}

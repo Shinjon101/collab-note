@@ -24,7 +24,7 @@ export async function createDocument() {
     const [doc] = await db
       .insert(documents)
       .values({
-        title: "Untitled Document",
+        title: "New Doc",
         ownerId: userId,
       })
       .returning();

@@ -8,6 +8,7 @@ const NewDocumentButton = () => {
   const [isPending, startTransition] = useTransition();
   return (
     <Button
+      className="cursor-pointer"
       onClick={() => {
         startTransition(() => {
           createDocument();
