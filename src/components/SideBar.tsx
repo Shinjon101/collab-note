@@ -9,11 +9,16 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { MenuIcon } from "lucide-react";
+import SidebarDocuments from "./SideBarDocuments";
 
 const SideBar = () => {
   const menuOptions = (
     <>
       <NewDocumentButton />
+      <SidebarDocuments />
+      {/*Created docs*/}
+
+      {/*Later invited on docs*/}
     </>
   );
 
