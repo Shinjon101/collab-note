@@ -39,7 +39,9 @@ export default async function SideBar() {
         </Sheet>
       </div>
 
-      <div className="hidden md:inline">{menuOptions}</div>
+      <div className="hidden md:flex md:flex-col items-center justify-center ">
+        {menuOptions}
+      </div>
     </div>
   );
 }
