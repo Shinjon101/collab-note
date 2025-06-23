@@ -1,10 +1,13 @@
-import { Button } from "@/components/ui/button";
+import Document from "@/components/Document";
 
-export default function Home() {
+const page = async ({ params }: { params: { id: string } }) => {
+  const { id } = params;
+
   return (
-    <main className="">
-      <h1>Lets gooo and make this shit</h1>
-      <Button>Hi</Button>
-    </main>
+    <div className="flex flex-col flex-1 min-h-screen">
+      <Document id={id} />
+    </div>
   );
-}
+};
+
+export default page;
