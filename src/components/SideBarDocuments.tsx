@@ -25,7 +25,7 @@ export default function SidebarDocuments({ docs }: SidebarDocumentsProps) {
           <Link
             key={doc.id}
             href={`/documents/${doc.id}`}
-            className={`relative border py-1 rounded-md text-center px-5 ${
+            className={`border py-1 rounded-md text-center px-5 ${
               isActive
                 ? "bg-gray-300 font-bold border-black"
                 : "border-gray-400"
