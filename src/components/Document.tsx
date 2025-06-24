@@ -4,7 +4,6 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { updateTitle } from "../../actions/updateTitle";
 import { getTitle } from "../../actions/getTitle";
-import { Editor } from "./Editor";
 
 interface Props {
   id: string;
@@ -51,7 +50,6 @@ const Document = ({ id }: Props) => {
         {/* MangeUsers */}
         {/* Avatars */}
       </div>
-      <Editor />
     </div>
   );
 };
