@@ -13,5 +13,5 @@ export const updateTitle = async (id: string, newTitle: string) => {
   await db
     .update(documents)
     .set({ title: newTitle })
-    .where(eq(documents.id, Number(id)));
+    .where(eq(documents.id, id));
 };
