@@ -10,12 +10,12 @@ import DeleteDocButton from "./DeleteDocButton";
 
 interface Props {
   id: string;
+  isOwner: boolean;
 }
 
-const Document = ({ id }: Props) => {
+const Document = ({ id, isOwner }: Props) => {
   const [input, setInput] = useState("");
   const [isUpdating, startTransition] = useTransition();
-  const { isOwner, isLoading } = useIsOwner(id);
 
   const fetchTitle = async () => {
     const dbTitle = await getTitle(id);
@@ -49,8 +49,8 @@ const Document = ({ id }: Props) => {
           >
             {isUpdating ? "Updating..." : "Update"}
           </Button>
-          {/* if owner ? */}
-          {!isLoading && isOwner && <DeleteDocButton id={id} />}
+          {/* if owner ? DELETE / Share*/}
+          {isOwner && <DeleteDocButton id={id} />}
         </form>
       </div>
 
