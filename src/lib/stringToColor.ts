@@ -1,10 +1,13 @@
-function stringToColor(str: string) {
+function stringToColor(str: string): string {
   let hash = 0;
-  for (let i = 0; i < str.length, i++; ) {
+
+  for (let i = 0; i < str.length; i++) {
     hash = str.charCodeAt(i) + ((hash << 5) - hash);
   }
 
-  const c = (hash & 0x00ffffff).toString(16).toUpperCase();
-  return "#" + "00000".substring(0, 6 - c.length) + c;
+  const hex = (hash >>> 0).toString(16).toUpperCase().padStart(6, "0");
+
+  return `#${hex}`;
 }
+
 export default stringToColor;

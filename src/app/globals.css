@@ -1,6 +1,9 @@
+
 @import "tailwindcss";
 @tailwind utilities;
 @import "tw-animate-css";
+@import "@blocknote/core/fonts/inter.css";
+@import "@blocknote/shadcn/style.css";
 
 @custom-variant dark (&:is(.dark *));
 
