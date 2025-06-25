@@ -19,7 +19,7 @@ export const users = pgTable("users", {
 export const documents = pgTable("documents", {
   id: text("id")
     .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()), // ✅ text ID for Liveblocks
+    .$defaultFn(() => crypto.randomUUID()), // text ID for Liveblocks
   title: text("title").notNull(),
   content: text("content").default(""),
   createdAt: timestamp("created_at").defaultNow(),
@@ -39,7 +39,7 @@ export const userRooms = pgTable(
     userId: text("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
-    roomId: text("room_id") // ✅ MATCHES documents.id
+    roomId: text("room_id") // MATCHES documents.id
       .notNull()
       .references(() => documents.id, { onDelete: "cascade" }),
     role: text("role", { enum: ["read", "edit"] }).notNull(),
@@ -49,12 +49,12 @@ export const userRooms = pgTable(
   })
 );
 
-// documentCollaborators - old style, now fixed
+// documentCollaborators
 export const documentCollaborators = pgTable(
   "document_collaborators",
   {
     id: serial("id").primaryKey(),
-    documentId: text("document_id") // ✅ CHANGED from integer to text
+    documentId: text("document_id")
       .notNull()
       .references(() => documents.id, { onDelete: "cascade" }),
     userId: text("user_id")

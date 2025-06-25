@@ -39,7 +39,7 @@ const BlockNote = ({ doc, provider, darkMode, userInfo }: EditorProps) => {
   );
 
   return (
-    <div className="relative z-0 max-w-5xl mx-auto">
+    <div className="relative z-0 max-w-7xl mx-auto">
       <BlockNoteView
         className="min-h-screen"
         editor={editor}

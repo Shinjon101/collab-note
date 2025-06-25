@@ -5,6 +5,8 @@ import { Button } from "./ui/button";
 import { updateTitle } from "../../actions/updateTitle";
 import { getTitle } from "../../actions/getTitle";
 import Editor from "./Editor";
+import { useIsOwner } from "@/hooks/useIsOwner";
+import DeleteDocButton from "./DeleteDocButton";
 
 interface Props {
   id: string;
@@ -13,6 +15,7 @@ interface Props {
 const Document = ({ id }: Props) => {
   const [input, setInput] = useState("");
   const [isUpdating, startTransition] = useTransition();
+  const { isOwner, isLoading } = useIsOwner(id);
 
   const fetchTitle = async () => {
     const dbTitle = await getTitle(id);
@@ -43,7 +46,7 @@ const Document = ({ id }: Props) => {
             {isUpdating ? "Updating..." : "Update"}
           </Button>
           {/* if owner ? */}
-          {/* invite & Delte */}
+          {!isLoading && isOwner && <DeleteDocButton id={id} />}
         </form>
       </div>
 
