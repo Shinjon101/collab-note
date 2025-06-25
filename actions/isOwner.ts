@@ -5,14 +5,15 @@ import { db } from "@/db";
 import { documents } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
-export const isOwner = async (docId: string) => {
+export async function isOwner(docId: string): Promise<boolean> {
   const { userId } = await auth();
-  if (!userId) return false;
+  if (!userId) return false; // not signed in → definitely not owner
 
   const [row] = await db
-    .select({ id: documents.id })
+    .select({ ownerId: documents.ownerId })
     .from(documents)
     .where(eq(documents.id, docId));
 
-  return row?.id ? true : false; // only owner can call, so just exists check
-};
+  // row is undefined if the doc doesn't exist
+  return row?.ownerId === userId;
+}

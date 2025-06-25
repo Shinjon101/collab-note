@@ -19,10 +19,12 @@ type EditorProps = {
   userInfo: {
     name: string;
     email: string;
+    role: string;
   };
 };
 
 const BlockNote = ({ doc, provider, darkMode, userInfo }: EditorProps) => {
+  const readOnly = userInfo.role === "read";
   const editor: BlockNoteEditor = useCreateBlockNote(
     useMemo(() => {
       return {
@@ -42,6 +44,7 @@ const BlockNote = ({ doc, provider, darkMode, userInfo }: EditorProps) => {
     <div className="relative z-0 max-w-7xl mx-auto">
       <BlockNoteView
         className="min-h-screen"
+        editable={!readOnly}
         editor={editor}
         theme={darkMode ? "dark" : "light"}
       />
@@ -91,6 +94,7 @@ const Editor = () => {
         userInfo={{
           name: userInfo.name ?? "Anonymous",
           email: userInfo.email ?? "anonymous@example.com",
+          role: userInfo.role ?? "read",
         }}
       />
     </div>

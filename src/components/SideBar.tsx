@@ -1,3 +1,4 @@
+import { getSharedDocs } from "../../actions/getSharedDocs";
 import { getUserDocs } from "../../actions/getUserDocuments";
 import SidebarDocuments from "../components/SideBarDocuments"; // adjust import if needed
 import NewDocumentButton from "./NewDocumentButton";
@@ -11,12 +12,13 @@ import {
 import { MenuIcon } from "lucide-react";
 
 export default async function SideBar() {
-  const docs = await getUserDocs();
+  const createdDocs = await getUserDocs();
+  const sharedDocs = await getSharedDocs();
 
   const menuOptions = (
     <>
       <NewDocumentButton />
-      <SidebarDocuments docs={docs} />
+      <SidebarDocuments createdDocs={createdDocs} sharedDocs={sharedDocs} />
     </>
   );
 

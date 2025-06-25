@@ -1,61 +1,81 @@
 "use client";
-
-import React, { useTransition, useState } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Dialog,
+  DialogTrigger,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-  DialogClose,
+  DialogFooter,
 } from "@/components/ui/dialog";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { MailPlus } from "lucide-react";
+import { inviteUser } from "../../actions/inviteUser";
+import { useState, useTransition } from "react";
 
-type Props = {
-  id: string; // document ID
-};
-
-const InviteButton = ({ id }: Props) => {
-  const [open, setOpen] = useState(false);
+export default function InviteUserButton({ docId }: { docId: string }) {
   const [email, setEmail] = useState("");
-  const [isPending, startTransition] = useTransition();
+  const [role, setRole] = useState<"read" | "edit">("edit");
+  const [msg, setMsg] = useState<string | null>(null);
+  const [pending, start] = useTransition();
 
-  const handleInvite = (e: React.FormEvent) => {
-    e.preventDefault();
-    startTransition(async () => {});
-  };
+  const submit = () =>
+    start(async () => {
+      setMsg(null);
+      const res = await inviteUser(docId, email.trim(), role);
+      if (!res.ok) {
+        setMsg(res.error);
+        return;
+      }
+      setEmail("");
+    });
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <Button asChild variant="outline" className="cursor-pointer">
-        <DialogTrigger>Invite</DialogTrigger>
+    <Dialog>
+      <Button asChild variant="secondary">
+        <DialogTrigger>
+          <MailPlus className="mr-2 h-4 w-4" />
+          Invite
+        </DialogTrigger>
       </Button>
 
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Invite User</DialogTitle>
-          <DialogDescription>
-            Enter email and set role of user you want to invite.
-          </DialogDescription>
+          <DialogTitle>Add collaborator</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleInvite}>
+        <div className="flex justify-between gap-5">
           <Input
-            type="email"
             placeholder="email"
-            className="w-full"
             value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            disabled={pending}
           />
-          <Button type="submit" disabled={!email || isPending}>
-            {isPending ? "Inviting" : "Invite"}
+          <Select onValueChange={(v) => setRole(v as "read" | "edit")}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Role" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="edit">Editor</SelectItem>
+              <SelectItem value="read">Viewer</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {msg && <p className="text-red-500 text-sm mt-2">{msg}</p>}
+
+        <DialogFooter className="flex justify-start">
+          <Button disabled={pending} onClick={submit}>
+            {pending ? "Adding…" : "Add"}
           </Button>
-          {/* some sort of switch or drop down to choose role: By default -> Viewer */}
-        </form>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
-};
-
-export default InviteButton;
+}

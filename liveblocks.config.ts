@@ -21,6 +21,7 @@ declare global {
         email: string;
         name: string;
         avatar: string;
+        role: string;
       };
     };
 

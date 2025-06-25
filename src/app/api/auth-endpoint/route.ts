@@ -98,6 +98,35 @@ export async function POST(req: Request) {
       return new Response("Access denied", { status: 403 });
     }
 
+    let role: "read" | "edit" | null = null;
+
+    if (roomDoc.ownerId === userId) {
+      role = "edit"; // owner has full rights
+    } else {
+      const [ur] = await db
+        .select({ role: userRooms.role })
+        .from(userRooms)
+        .where(and(eq(userRooms.userId, userId), eq(userRooms.roomId, roomId)));
+      if (ur) role = ur.role as "read" | "edit";
+      else {
+        // fallback to documentCollaborators
+        const [col] = await db
+          .select({ role: documentCollaborators.role })
+          .from(documentCollaborators)
+          .where(
+            and(
+              eq(documentCollaborators.userId, userId),
+              eq(documentCollaborators.documentId, roomId)
+            )
+          );
+        if (col) role = col.role as "read" | "edit";
+      }
+    }
+
+    if (!role) {
+      return new Response("Access denied", { status: 403 });
+    }
+
     console.log(
       "Access granted - User:",
       userId,
@@ -107,7 +136,7 @@ export async function POST(req: Request) {
       isOwner
     );
 
-    console.log("Creating Liveblocks session for user:", userId);
+    console.log("Creating Liveblocks session for user:", userId, role);
 
     // Create Liveblocks session with permissions
     const session = liveblocks.prepareSession(userId, {
@@ -115,10 +144,14 @@ export async function POST(req: Request) {
         name: userName,
         email: userEmail,
         avatar: userAvatar,
+        role: role,
       },
     });
-
-    session.allow(roomId, session.FULL_ACCESS);
+    if (role === "edit") {
+      session.allow(roomId, session.FULL_ACCESS); // read + write
+    } else {
+      session.allow(roomId, session.READ_ACCESS); // read-only
+    }
 
     const { status, body } = await session.authorize();
 

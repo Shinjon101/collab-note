@@ -5,8 +5,9 @@ import { Button } from "./ui/button";
 import { updateTitle } from "../../actions/updateTitle";
 import { getTitle } from "../../actions/getTitle";
 import Editor from "./Editor";
-import { useIsOwner } from "@/hooks/useIsOwner";
+
 import DeleteDocButton from "./DeleteDocButton";
+import InviteUserButton from "./InviteButton";
 
 interface Props {
   id: string;
@@ -50,7 +51,12 @@ const Document = ({ id, isOwner }: Props) => {
             {isUpdating ? "Updating..." : "Update"}
           </Button>
           {/* if owner ? DELETE / Share*/}
-          {isOwner && <DeleteDocButton id={id} />}
+          {isOwner && (
+            <>
+              <DeleteDocButton id={id} />
+              <InviteUserButton docId={id} />
+            </>
+          )}
         </form>
       </div>
 
