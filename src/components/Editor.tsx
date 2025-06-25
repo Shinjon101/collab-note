@@ -70,10 +70,10 @@ const Editor = () => {
 
   if (!doc || !provider || !userInfo) return null;
 
-  const style = `hover:text-white ${
+  const style = `hover:text-white cursor-pointer ${
     darkMode
-      ? "text-gray-100 bg-gray-200 hover:bg-gray-100 hover:text-gray-700"
-      : "text-gray-700 bg-gray-200 hover:bg-gray-300 hover:text-gray-700"
+      ? "text-gray-700 bg-gray-300 hover:bg-gray-900"
+      : "text-gray-700 bg-gray-300 hover:bg-gray-900"
   }`;
 
   return (

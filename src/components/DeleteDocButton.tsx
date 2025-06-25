@@ -31,7 +31,7 @@ const DeleteDocButton = ({ id }: Props) => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <Button asChild variant="destructive">
+      <Button asChild variant="destructive" className="cursor-pointer">
         <DialogTrigger>Delete</DialogTrigger>
       </Button>
 
@@ -50,6 +50,7 @@ const DeleteDocButton = ({ id }: Props) => {
             variant="destructive"
             onClick={handleDelete}
             disabled={isPending}
+            className="cursor-pointer"
           >
             {isPending ? "Deleting…" : "Delete"}
           </Button>
