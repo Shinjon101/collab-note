@@ -33,7 +33,6 @@ const Document = ({ id, isOwner }: Props) => {
     if (input.trim()) {
       startTransition(async () => {
         await updateTitle(id, input);
-        setInput("");
       });
     }
   };
@@ -61,12 +60,12 @@ const Document = ({ id, isOwner }: Props) => {
         </form>
       </div>
 
-      <div>
+      <div className="mt-5">
         <ManageUser />
         {/* Avatars */}
       </div>
 
-      <hr className="pb-10 mt-10" />
+      <hr className="pb-10 mt-5" />
       <Editor />
     </div>
   );
