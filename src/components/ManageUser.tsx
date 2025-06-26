@@ -16,9 +16,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { MailPlus, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { useEffect, useState, useTransition } from "react";
-import { useUser } from "@clerk/nextjs";
 import { useRoom } from "@liveblocks/react/suspense";
 import {
   getRoomMembers,
@@ -34,7 +33,6 @@ type Member = {
 };
 
 export default function ManageUser() {
-  const { user } = useUser();
   const room = useRoom();
   const [members, setMembers] = useState<Member[]>([]);
   const [isOwner, setIsOwner] = useState(false);

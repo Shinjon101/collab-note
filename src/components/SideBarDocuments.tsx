@@ -27,7 +27,7 @@ export default function SidebarDocuments({
         key={doc.id}
         href={`/documents/${doc.id}`}
         className={`border py-1 rounded-md text-center px-5 max-w-[150px] truncate overflow-hidden ${
-          isActive ? "bg-gray-300 font-bold border-black" : "border-gray-400"
+          isActive ? "font-bold border-black" : ""
         }`}
       >
         {doc.title || "Untitled"}

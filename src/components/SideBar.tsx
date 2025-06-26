@@ -23,7 +23,7 @@ export default async function SideBar() {
   );
 
   return (
-    <div className="bg-gray-200 relative p-2 md:p-5">
+    <div className="  relative p-2 md:p-5">
       <div className="md:hidden">
         <Sheet>
           <SheetTrigger>

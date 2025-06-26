@@ -4,6 +4,7 @@ import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import Header from "@/components/Header";
 import SideBar from "@/components/SideBar";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -17,15 +18,22 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html lang="en" suppressHydrationWarning>
         <body>
-          <Header />
-          <div className="flex min-h-screen">
-            <SideBar />
-            <div className="flex-1 p-5 bg-gray-100 overflow-y-auto scrollbar-hide">
-              {children}
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <Header />
+            <div className="flex min-h-screen">
+              <SideBar />
+              <div className="flex-1 p-5 overflow-y-auto scrollbar-hide">
+                {children}
+              </div>
             </div>
-          </div>
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>

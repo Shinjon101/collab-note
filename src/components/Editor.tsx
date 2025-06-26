@@ -4,8 +4,7 @@ import { useRoom, useSelf } from "@liveblocks/react";
 import { useEffect, useMemo, useState } from "react";
 import * as Y from "yjs";
 import { LiveblocksYjsProvider } from "@liveblocks/yjs";
-import { Button } from "./ui/button";
-import { MoonIcon, SunIcon } from "lucide-react";
+import { useTheme } from "next-themes";
 import { BlockNoteView } from "@blocknote/shadcn";
 import { useCreateBlockNote } from "@blocknote/react";
 import stringToColor from "@/lib/stringToColor";
@@ -15,7 +14,6 @@ import type { BlockNoteEditor } from "@blocknote/core";
 type EditorProps = {
   doc: Y.Doc;
   provider: any;
-  darkMode: boolean;
   userInfo: {
     name: string;
     email: string;
@@ -23,7 +21,9 @@ type EditorProps = {
   };
 };
 
-const BlockNote = ({ doc, provider, darkMode, userInfo }: EditorProps) => {
+const BlockNote = ({ doc, provider, userInfo }: EditorProps) => {
+  const { theme } = useTheme();
+  const darkMode = theme === "dark";
   const readOnly = userInfo.role === "read";
   const editor: BlockNoteEditor = useCreateBlockNote(
     useMemo(() => {
@@ -41,9 +41,8 @@ const BlockNote = ({ doc, provider, darkMode, userInfo }: EditorProps) => {
   );
 
   return (
-    <div className="relative z-0 max-w-7xl mx-auto">
+    <div className="relative z-0 max-w-7xl mx-auto min-h-screen">
       <BlockNoteView
-        className="min-h-screen"
         editable={!readOnly}
         editor={editor}
         theme={darkMode ? "dark" : "light"}
@@ -73,31 +72,18 @@ const Editor = () => {
 
   if (!doc || !provider || !userInfo) return null;
 
-  const style = `hover:text-white cursor-pointer ${
-    darkMode
-      ? "text-gray-700 bg-gray-300 hover:bg-gray-900"
-      : "text-gray-700 bg-gray-300 hover:bg-gray-900"
-  }`;
-
   return (
-    <div className="max-w-6xl mx-auto">
-      <div className="flex items-center gap-2 justify-end mb-10">
-        <Button className={style} onClick={() => setDarkMode((prev) => !prev)}>
-          {darkMode ? <SunIcon /> : <MoonIcon />}
-        </Button>
-      </div>
-
+    <section className="max-w-7xl mx-auto ">
       <BlockNote
         doc={doc}
         provider={provider}
-        darkMode={darkMode}
         userInfo={{
           name: userInfo.name ?? "Anonymous",
           email: userInfo.email ?? "anonymous@example.com",
           role: userInfo.role ?? "read",
         }}
       />
-    </div>
+    </section>
   );
 };
 
