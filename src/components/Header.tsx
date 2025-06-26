@@ -17,7 +17,7 @@ const Header = () => {
   const darkMode = theme === "dark";
 
   return (
-    <div className="flex items-center justify-between p-5">
+    <header className="flex items-center justify-between p-5 bg-secondary">
       {user && (
         <h1 className="tex-2xl font-bold">
           {user?.firstName}
@@ -25,8 +25,11 @@ const Header = () => {
         </h1>
       )}
 
-      <div className="flex items-center gap-5">
-        <Button onClick={() => setTheme(darkMode ? "light" : "dark")}>
+      <section className="flex items-center gap-5">
+        <Button
+          variant="outline"
+          onClick={() => setTheme(darkMode ? "light" : "dark")}
+        >
           {darkMode ? <SunIcon /> : <MoonIcon />}
         </Button>
 
@@ -36,8 +39,8 @@ const Header = () => {
         <SignedIn>
           <UserButton />
         </SignedIn>
-      </div>
-    </div>
+      </section>
+    </header>
   );
 };
 

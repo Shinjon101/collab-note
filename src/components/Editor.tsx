@@ -1,5 +1,4 @@
 "use room";
-
 import { useRoom, useSelf } from "@liveblocks/react";
 import { useEffect, useMemo, useState } from "react";
 import * as Y from "yjs";
@@ -8,7 +7,6 @@ import { useTheme } from "next-themes";
 import { BlockNoteView } from "@blocknote/shadcn";
 import { useCreateBlockNote } from "@blocknote/react";
 import stringToColor from "@/lib/stringToColor";
-
 import type { BlockNoteEditor } from "@blocknote/core";
 
 type EditorProps = {
@@ -25,6 +23,7 @@ const BlockNote = ({ doc, provider, userInfo }: EditorProps) => {
   const { theme } = useTheme();
   const darkMode = theme === "dark";
   const readOnly = userInfo.role === "read";
+
   const editor: BlockNoteEditor = useCreateBlockNote(
     useMemo(() => {
       return {
@@ -41,11 +40,12 @@ const BlockNote = ({ doc, provider, userInfo }: EditorProps) => {
   );
 
   return (
-    <div className="relative z-0 max-w-7xl mx-auto min-h-screen">
+    <div className="min-h-screen pt-8">
       <BlockNoteView
         editable={!readOnly}
         editor={editor}
         theme={darkMode ? "dark" : "light"}
+        className="full-height-editor"
       />
     </div>
   );
@@ -55,7 +55,6 @@ const Editor = () => {
   const room = useRoom();
   const [doc, setDoc] = useState<Y.Doc>();
   const [provider, setProvider] = useState<LiveblocksYjsProvider>();
-  const [darkMode, setDarkMode] = useState(false);
   const userInfo = useSelf((me) => me.info);
 
   useEffect(() => {
@@ -73,7 +72,7 @@ const Editor = () => {
   if (!doc || !provider || !userInfo) return null;
 
   return (
-    <section className="max-w-7xl mx-auto ">
+    <section className="max-w-7xl mx-auto min-h-screen">
       <BlockNote
         doc={doc}
         provider={provider}

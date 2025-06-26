@@ -26,11 +26,11 @@ export default function SidebarDocuments({
       <Link
         key={doc.id}
         href={`/documents/${doc.id}`}
-        className={`border py-1 rounded-md text-center px-5 max-w-[150px] truncate overflow-hidden ${
-          isActive ? "font-bold border-black" : ""
+        className={`border py-1 rounded-md text-center px-3 max-w-[150px] truncate overflow-hidden ${
+          isActive ? "font-bold bg-secondary border-2" : ""
         }`}
       >
-        {doc.title || "Untitled"}
+        {doc.title}
       </Link>
     );
   };

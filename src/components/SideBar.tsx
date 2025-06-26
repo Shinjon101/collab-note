@@ -23,7 +23,7 @@ export default async function SideBar() {
   );
 
   return (
-    <div className="  relative p-2 md:p-5">
+    <aside className="relative p-2 md:p-5 bg-accent">
       <div className="md:hidden">
         <Sheet>
           <SheetTrigger>
@@ -44,6 +44,6 @@ export default async function SideBar() {
       <div className="hidden md:flex md:flex-col items-center justify-center ">
         {menuOptions}
       </div>
-    </div>
+    </aside>
   );
 }

@@ -39,7 +39,7 @@ export default function InviteUserButton({ docId }: { docId: string }) {
 
   return (
     <Dialog>
-      <Button asChild variant="secondary">
+      <Button asChild variant="outline">
         <DialogTrigger>
           <MailPlus className="mr-2 h-4 w-4" />
           Invite

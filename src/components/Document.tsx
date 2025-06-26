@@ -50,7 +50,7 @@ const Document = ({ id, isOwner }: Props) => {
           >
             {isUpdating ? "Updating..." : "Update"}
           </Button>
-          {/* if owner ? DELETE / Share*/}
+
           {isOwner && (
             <>
               <DeleteDocButton id={id} />
@@ -60,12 +60,11 @@ const Document = ({ id, isOwner }: Props) => {
         </form>
       </div>
 
-      <div className="mt-5">
+      <hr className=" mb-5 mt-10" />
+      <div className="mb-10">
         <ManageUser />
-        {/* Avatars */}
       </div>
 
-      <hr className="pb-10 mt-5" />
       <Editor />
     </div>
   );
