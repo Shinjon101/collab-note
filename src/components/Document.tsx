@@ -8,6 +8,7 @@ import Editor from "./Editor";
 
 import DeleteDocButton from "./DeleteDocButton";
 import InviteUserButton from "./InviteButton";
+import ManageUser from "./ManageUser";
 
 interface Props {
   id: string;
@@ -61,7 +62,7 @@ const Document = ({ id, isOwner }: Props) => {
       </div>
 
       <div>
-        {/* MangeUsers */}
+        <ManageUser />
         {/* Avatars */}
       </div>
 

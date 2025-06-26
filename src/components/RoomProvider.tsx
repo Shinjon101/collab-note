@@ -1,6 +1,5 @@
 "use client";
 import {
-  LiveblocksProvider,
   RoomProvider as RoomProviderWrapper,
   ClientSideSuspense,
 } from "@liveblocks/react/suspense";
