@@ -88,7 +88,7 @@ export default function ManageUser() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <Button asChild variant="outline">
-        <DialogTrigger>Users ({members.length})</DialogTrigger>
+        <DialogTrigger>Users</DialogTrigger>
       </Button>
 
       <DialogContent>

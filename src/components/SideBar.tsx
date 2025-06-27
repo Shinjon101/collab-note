@@ -27,7 +27,7 @@ export default async function SideBar() {
       <div className="md:hidden">
         <Sheet>
           <SheetTrigger>
-            <MenuIcon className=" hover:opacity-75 transition-opacity ease-in-out" />
+            <MenuIcon className=" hover:opacity-75 transition-opacity ease-in-out mt-5" />
           </SheetTrigger>
           <SheetContent side="left" className=" w-max-[300px] items-center">
             <SheetHeader className="items-center gap-5">

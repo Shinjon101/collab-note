@@ -1,4 +1,5 @@
 "use client";
+
 import React, { FormEvent, useEffect, useState, useTransition } from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
@@ -20,34 +21,25 @@ const Document = ({ id, isOwner }: Props) => {
   const [originalTitle, setOriginalTitle] = useState("");
   const [isUpdating, startTransition] = useTransition();
 
-  const fetchTitle = async () => {
-    const dbTitle = await getTitle(id);
-    setInput(dbTitle);
-    setOriginalTitle(dbTitle);
-  };
-
   useEffect(() => {
-    fetchTitle();
-  }, []);
+    (async () => {
+      const dbTitle = await getTitle(id);
+      setInput(dbTitle);
+      setOriginalTitle(dbTitle);
+    })();
+  }, [id]);
 
   const updateDocTitle = (e: FormEvent) => {
     e.preventDefault();
-
     const trimmedInput = input.trim();
 
-    // Check if input is empty
     if (!trimmedInput) {
-      toast.error("Error!", {
-        description: "Title cannot be empty",
-      });
+      toast.error("Error!", { description: "Title cannot be empty" });
       return;
     }
 
-    // Check if title actually changed
     if (trimmedInput === originalTitle) {
-      toast.info("No changes", {
-        description: "Title is already up to date",
-      });
+      toast.info("No changes", { description: "Title is already up to date" });
       return;
     }
 
@@ -55,51 +47,64 @@ const Document = ({ id, isOwner }: Props) => {
       try {
         await updateTitle(id, trimmedInput);
         setOriginalTitle(trimmedInput);
-        toast.success("Success", {
-          description: "Document name updated",
-        });
+        toast.success("Success", { description: "Title updated" });
       } catch (err) {
-        toast.error("Error!", {
-          description: `Error: ${err}`,
-        });
+        toast.error("Error!", { description: `Error: ${err}` });
       }
     });
   };
 
-  // Check if there are unsaved changes
   const hasUnsavedChanges = input.trim() !== originalTitle;
 
   return (
-    <div>
-      <div>
-        <form className="flex justify-between gap-10" onSubmit={updateDocTitle}>
-          {/* update title */}
-          <Input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Document title"
-          />
-          <Button
-            type="submit"
-            disabled={isUpdating || !hasUnsavedChanges}
-            className="cursor-pointer"
-          >
-            {isUpdating ? "Updating..." : "Update"}
-          </Button>
+    <>
+      {/* Title + actions */}
+      <header className="mb-6">
+        <form
+          aria-label="Update document title"
+          onSubmit={updateDocTitle}
+          className="flex flex-col gap-4 sm:flex-row sm:items-center"
+        >
+          {/* Input + update button */}
+          <div className="flex w-full gap-2">
+            <Input
+              aria-label="Document title"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Document title"
+              className="flex-1"
+            />
+            <Button
+              aria-label="Save title"
+              type="submit"
+              disabled={isUpdating || !hasUnsavedChanges}
+            >
+              {isUpdating ? "Updating…" : "Update"}
+            </Button>
+          </div>
+
+          {/* Owner actions */}
           {isOwner && (
-            <>
+            <div className="flex gap-2">
               <DeleteDocButton id={id} />
               <InviteUserButton docId={id} />
-            </>
+            </div>
           )}
         </form>
-      </div>
-      <hr className="mb-5 mt-10" />
-      <div className="mb-10">
+      </header>
+
+      <hr className="mt-3 mb-5" />
+
+      {/* Collaborator list */}
+      <section className="mb-10" aria-label="Manage collaborators">
         <ManageUser />
-      </div>
-      <Editor />
-    </div>
+      </section>
+
+      {/* Editor */}
+      <main aria-label="Document editor">
+        <Editor />
+      </main>
+    </>
   );
 };
 
