@@ -43,7 +43,6 @@ export default function ManageUser() {
 
   //fetch roster each time dialog opens
   useEffect(() => {
-    if (!open) return;
     startTransition(async () => {
       try {
         const res = await getRoomMembers(room.id);

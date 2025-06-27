@@ -1,5 +1,5 @@
 "use client";
-
+import { useRouter } from "next/navigation";
 import {
   Select,
   SelectContent,
@@ -28,6 +28,7 @@ export default function InviteUserButton({ docId }: { docId: string }) {
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<"read" | "edit" | "">(""); // "" = not chosen
   const [pending, start] = useTransition();
+  const router = useRouter();
 
   const clear = () => {
     setEmail("");
@@ -55,6 +56,7 @@ export default function InviteUserButton({ docId }: { docId: string }) {
       toast.success("User invited!");
       clear();
       setOpen(false); // close dialog
+      router.refresh();
     });
 
   return (
