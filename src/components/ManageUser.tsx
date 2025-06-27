@@ -40,10 +40,7 @@ export default function ManageUser() {
   const [open, setOpen] = useState(false);
   const [pending, startTransition] = useTransition();
 
-  // Fetch members when dialog opens
   useEffect(() => {
-    if (!open) return;
-
     startTransition(() => {
       getRoomMembers(room.id).then((res) => {
         setIsOwner(res.isOwner);
@@ -76,7 +73,7 @@ export default function ManageUser() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <Button asChild variant="secondary">
-        <DialogTrigger>Users ({members.length})</DialogTrigger>
+        <DialogTrigger>Users</DialogTrigger>
       </Button>
 
       <DialogContent>

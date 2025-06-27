@@ -59,7 +59,7 @@ export default function InviteUserButton({ docId }: { docId: string }) {
           />
           <Select onValueChange={(v) => setRole(v as "read" | "edit")}>
             <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Role" />
+              <SelectValue placeholder="Editor" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="edit">Editor</SelectItem>
