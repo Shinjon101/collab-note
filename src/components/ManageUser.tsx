@@ -72,7 +72,7 @@ export default function ManageUser() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <Button asChild variant="secondary">
+      <Button asChild variant="outline">
         <DialogTrigger>Users</DialogTrigger>
       </Button>
 
