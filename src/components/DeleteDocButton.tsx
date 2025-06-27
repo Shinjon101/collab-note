@@ -1,5 +1,5 @@
 "use client";
-
+import { useRouter } from "next/navigation";
 import React, { useTransition, useState } from "react";
 import {
   Dialog,
@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "./ui/button";
 import { deleteDocument } from "../../actions/deleteDocument";
+import { toast } from "sonner";
 
 type Props = {
   id: string; // document ID
@@ -21,11 +22,20 @@ type Props = {
 const DeleteDocButton = ({ id }: Props) => {
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
-
+  const router = useRouter();
   const handleDelete = () => {
     startTransition(async () => {
-      await deleteDocument(id); // server action redirects on success
-      // No further client code runs after redirect
+      try {
+        setOpen(false);
+        await deleteDocument(id);
+        toast.success("Document deleted.");
+        router.push("/");
+        router.refresh();
+      } catch (err) {
+        toast.error(
+          err instanceof Error ? err.message : "Error deleting document"
+        );
+      }
     });
   };
 

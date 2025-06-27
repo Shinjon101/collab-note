@@ -24,6 +24,7 @@ import {
   removeUserFromRoom,
   updateUserRole,
 } from "../../actions/roomActions";
+import { toast } from "sonner";
 
 type Member = {
   id: string;
@@ -40,40 +41,55 @@ export default function ManageUser() {
   const [open, setOpen] = useState(false);
   const [pending, startTransition] = useTransition();
 
+  //fetch roster each time dialog opens
   useEffect(() => {
-    startTransition(() => {
-      getRoomMembers(room.id).then((res) => {
+    if (!open) return;
+    startTransition(async () => {
+      try {
+        const res = await getRoomMembers(room.id);
         setIsOwner(res.isOwner);
         setOwnerId(res.ownerId);
         setMembers(res.members);
-      });
+      } catch (err) {
+        toast.error("Unable to load members");
+      }
     });
   }, [open, room.id]);
 
+  //change role
   const onRoleChange = (userId: string, newRole: "read" | "edit") => {
-    startTransition(() => {
-      updateUserRole(room.id, userId, newRole).then(() => {
+    startTransition(async () => {
+      try {
+        await updateUserRole(room.id, userId, newRole);
+        toast.success("Role updated");
         setMembers((prev) =>
           prev.map((m) => (m.id === userId ? { ...m, role: newRole } : m))
         );
-      });
+      } catch (err) {
+        toast.error("Failed to update role");
+      }
     });
   };
 
+  // remove user
   const onRemove = (userId: string) => {
     if (!confirm("Are you sure you want to remove this user?")) return;
 
-    startTransition(() => {
-      removeUserFromRoom(room.id, userId).then(() => {
+    startTransition(async () => {
+      try {
+        await removeUserFromRoom(room.id, userId);
+        toast.success("User removed");
         setMembers((prev) => prev.filter((m) => m.id !== userId));
-      });
+      } catch (err) {
+        toast.error("Failed to remove user");
+      }
     });
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <Button asChild variant="outline">
-        <DialogTrigger>Users</DialogTrigger>
+        <DialogTrigger>Users ({members.length})</DialogTrigger>
       </Button>
 
       <DialogContent>
@@ -107,6 +123,7 @@ export default function ManageUser() {
                     onValueChange={(v) =>
                       onRoleChange(member.id, v as "read" | "edit")
                     }
+                    disabled={pending}
                   >
                     <SelectTrigger className="w-[100px]">
                       <SelectValue />

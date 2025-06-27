@@ -27,7 +27,4 @@ export const deleteDocument = async (docId: string) => {
 
   // Finally delete the document
   await db.delete(documents).where(eq(documents.id, docId));
-
-  // Back to homepage after delete
-  redirect("/");
 };

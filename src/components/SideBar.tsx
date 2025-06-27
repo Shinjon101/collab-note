@@ -29,13 +29,10 @@ export default async function SideBar() {
           <SheetTrigger>
             <MenuIcon className=" hover:opacity-75 transition-opacity ease-in-out" />
           </SheetTrigger>
-          <SheetContent
-            side="left"
-            className=" w-[400px] sm:w-[540px] items-center "
-          >
+          <SheetContent side="left" className=" w-max-[300px] items-center">
             <SheetHeader className="items-center gap-5">
               <SheetTitle>Menu</SheetTitle>
-              <div>{menuOptions}</div>
+              <div className="flex flex-col items-center">{menuOptions}</div>
             </SheetHeader>
           </SheetContent>
         </Sheet>

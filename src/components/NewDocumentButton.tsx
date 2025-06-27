@@ -3,6 +3,7 @@
 import { useTransition } from "react";
 import { Button } from "./ui/button";
 import { createDocument } from "../../actions/createDocument";
+import { toast } from "sonner";
 
 const NewDocumentButton = () => {
   const [isPending, startTransition] = useTransition();
@@ -11,7 +12,12 @@ const NewDocumentButton = () => {
       className="cursor-pointer mb-5"
       onClick={() => {
         startTransition(() => {
-          createDocument();
+          try {
+            createDocument();
+            toast.success("New Document created !");
+          } catch (err) {
+            toast.error("Error creating document");
+          }
         });
       }}
       disabled={isPending}
