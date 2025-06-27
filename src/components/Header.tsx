@@ -10,11 +10,16 @@ import { useUser } from "@clerk/nextjs";
 import { useTheme } from "next-themes";
 import { Button } from "./ui/button";
 import { MoonIcon, SunIcon } from "lucide-react";
+import HeaderSkeleton from "./HeaderSkeleton";
 
 const Header = () => {
-  const { user } = useUser();
+  const { user, isLoaded } = useUser();
   const { theme, setTheme } = useTheme();
   const darkMode = theme === "dark";
+
+  if (!isLoaded) {
+    return <HeaderSkeleton />;
+  }
 
   return (
     <header className="flex items-center justify-between p-5 bg-secondary">
