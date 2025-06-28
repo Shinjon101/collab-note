@@ -4,8 +4,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/db";
 import { documents, userRooms, documentCollaborators } from "@/db/schema";
-import { eq, and } from "drizzle-orm";
-import { redirect } from "next/navigation";
+import { eq } from "drizzle-orm";
 
 export const deleteDocument = async (docId: string) => {
   const { userId } = await auth();

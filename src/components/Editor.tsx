@@ -1,4 +1,4 @@
-"use room";
+"use client";
 import { useRoom, useSelf } from "@liveblocks/react";
 import { useEffect, useMemo, useState } from "react";
 import * as Y from "yjs";
@@ -8,58 +8,20 @@ import { BlockNoteView } from "@blocknote/shadcn";
 import { useCreateBlockNote } from "@blocknote/react";
 import stringToColor from "@/lib/stringToColor";
 import type { BlockNoteEditor } from "@blocknote/core";
-
-type EditorProps = {
-  doc: Y.Doc;
-  provider: any;
-  userInfo: {
-    name: string;
-    email: string;
-    role: string;
-  };
-};
-
-const BlockNote = ({ doc, provider, userInfo }: EditorProps) => {
-  const { theme } = useTheme();
-  const darkMode = theme === "dark";
-  const readOnly = userInfo.role === "read";
-
-  const editor: BlockNoteEditor = useCreateBlockNote(
-    useMemo(() => {
-      return {
-        collaboration: {
-          provider,
-          fragment: doc.getXmlFragment("document-store"),
-          user: {
-            name: userInfo.name,
-            color: stringToColor(userInfo.email),
-          },
-        },
-      };
-    }, [provider, doc, userInfo])
-  );
-
-  return (
-    <div className="min-h-screen pt-8">
-      <BlockNoteView
-        editable={!readOnly}
-        editor={editor}
-        theme={darkMode ? "dark" : "light"}
-        className="full-height-editor"
-      />
-    </div>
-  );
-};
+import { updateContent } from "../../actions/updateContent";
 
 const Editor = () => {
   const room = useRoom();
-  const [doc, setDoc] = useState<Y.Doc>();
-  const [provider, setProvider] = useState<LiveblocksYjsProvider>();
   const userInfo = useSelf((me) => me.info);
+  const { theme } = useTheme();
+
+  const [doc, setDoc] = useState<Y.Doc | null>(null);
+  const [provider, setProvider] = useState<LiveblocksYjsProvider | null>(null);
 
   useEffect(() => {
     const yDoc = new Y.Doc();
     const yProvider = new LiveblocksYjsProvider(room, yDoc);
+
     setDoc(yDoc);
     setProvider(yProvider);
 
@@ -69,18 +31,46 @@ const Editor = () => {
     };
   }, [room]);
 
-  if (!doc || !provider || !userInfo) return null;
+  const editor: BlockNoteEditor | null = useCreateBlockNote(
+    doc && provider && userInfo
+      ? {
+          collaboration: {
+            provider,
+            fragment: doc.getXmlFragment("document-store"),
+            user: {
+              name: userInfo.name ?? "Anonymous",
+              color: stringToColor(userInfo.email ?? "anon@example.com"),
+            },
+          },
+        }
+      : undefined
+  );
+
+  useEffect(() => {
+    //auto save to DB every 35 seconds
+    if (!doc || !room) return;
+
+    const interval = setInterval(async () => {
+      try {
+        const encoded = Y.encodeStateAsUpdate(doc);
+        const base64 = Buffer.from(encoded).toString("base64");
+
+        await updateContent(room.id, base64);
+        console.log("Auto-saved content for:", room.id);
+      } catch (err) {
+        console.error("Autosave error:", err);
+      }
+    }, 35_000);
+  });
+  if (!doc || !provider || !userInfo || !editor) return null;
 
   return (
-    <section className="max-w-7xl mx-auto min-h-screen">
-      <BlockNote
-        doc={doc}
-        provider={provider}
-        userInfo={{
-          name: userInfo.name ?? "Anonymous",
-          email: userInfo.email ?? "anonymous@example.com",
-          role: userInfo.role ?? "read",
-        }}
+    <section className="max-w-7xl mx-auto min-h-screen pt-8">
+      <BlockNoteView
+        editor={editor}
+        editable={userInfo.role !== "read"}
+        theme={theme === "dark" ? "dark" : "light"}
+        className="full-height-editor"
       />
     </section>
   );
