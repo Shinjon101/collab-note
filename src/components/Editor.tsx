@@ -1,13 +1,14 @@
 "use client";
+
 import { useRoom, useSelf } from "@liveblocks/react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import * as Y from "yjs";
 import { LiveblocksYjsProvider } from "@liveblocks/yjs";
 import { useTheme } from "next-themes";
 import { BlockNoteView } from "@blocknote/shadcn";
 import { useCreateBlockNote } from "@blocknote/react";
-import stringToColor from "@/lib/stringToColor";
 import type { BlockNoteEditor } from "@blocknote/core";
+import stringToColor from "@/lib/stringToColor";
 import { updateContent } from "../../actions/updateContent";
 
 const Editor = () => {
@@ -17,8 +18,12 @@ const Editor = () => {
 
   const [doc, setDoc] = useState<Y.Doc | null>(null);
   const [provider, setProvider] = useState<LiveblocksYjsProvider | null>(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Initialize Yjs doc and Liveblocks provider
   useEffect(() => {
+    if (!room) return;
+
     const yDoc = new Y.Doc();
     const yProvider = new LiveblocksYjsProvider(room, yDoc);
 
@@ -26,11 +31,13 @@ const Editor = () => {
     setProvider(yProvider);
 
     return () => {
-      yDoc.destroy();
       yProvider.destroy();
+      yDoc.destroy();
+      if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, [room]);
 
+  // Create BlockNote editor with collaboration
   const editor: BlockNoteEditor | null = useCreateBlockNote(
     doc && provider && userInfo
       ? {
@@ -46,11 +53,11 @@ const Editor = () => {
       : undefined
   );
 
+  // Auto-save to DB every 35 seconds
   useEffect(() => {
-    //auto save to DB every 35 seconds
     if (!doc || !room) return;
 
-    setInterval(async () => {
+    const interval = setInterval(async () => {
       try {
         const encoded = Y.encodeStateAsUpdate(doc);
         const base64 = Buffer.from(encoded).toString("base64");
@@ -61,7 +68,12 @@ const Editor = () => {
         console.error("Autosave error:", err);
       }
     }, 35_000);
-  });
+
+    intervalRef.current = interval;
+
+    return () => clearInterval(interval);
+  }, [doc, room]);
+
   if (!doc || !provider || !userInfo || !editor) return null;
 
   return (
