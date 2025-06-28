@@ -1,3 +1,18 @@
 {
-  "entries": []
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1751134017862,
+      "tag": "0000_nifty_karnak",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1751134912740,
+      "tag": "0001_certain_sabretooth",
+      "breakpoints": true
+    }
+  ]
 }

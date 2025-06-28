@@ -1,0 +1,1 @@
+ALTER TABLE "document_collaborators" DROP COLUMN "uselessFild";
