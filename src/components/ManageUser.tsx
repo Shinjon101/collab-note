@@ -49,7 +49,7 @@ export default function ManageUser() {
         setIsOwner(res.isOwner);
         setOwnerId(res.ownerId);
         setMembers(res.members);
-      } catch (err) {
+      } catch (_err) {
         toast.error("Unable to load members");
       }
     });
@@ -64,7 +64,7 @@ export default function ManageUser() {
         setMembers((prev) =>
           prev.map((m) => (m.id === userId ? { ...m, role: newRole } : m))
         );
-      } catch (err) {
+      } catch (_err) {
         toast.error("Failed to update role");
       }
     });
@@ -79,7 +79,7 @@ export default function ManageUser() {
         await removeUserFromRoom(room.id, userId);
         toast.success("User removed");
         setMembers((prev) => prev.filter((m) => m.id !== userId));
-      } catch (err) {
+      } catch (_err) {
         toast.error("Failed to remove user");
       }
     });

@@ -15,7 +15,7 @@ const NewDocumentButton = () => {
           try {
             createDocument();
             toast.success("New Document created !");
-          } catch (err) {
+          } catch (_err) {
             toast.error("Error creating document");
           }
         });

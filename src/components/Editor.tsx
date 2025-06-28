@@ -1,6 +1,6 @@
 "use client";
 import { useRoom, useSelf } from "@liveblocks/react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import * as Y from "yjs";
 import { LiveblocksYjsProvider } from "@liveblocks/yjs";
 import { useTheme } from "next-themes";
@@ -50,7 +50,7 @@ const Editor = () => {
     //auto save to DB every 35 seconds
     if (!doc || !room) return;
 
-    const interval = setInterval(async () => {
+    setInterval(async () => {
       try {
         const encoded = Y.encodeStateAsUpdate(doc);
         const base64 = Buffer.from(encoded).toString("base64");
