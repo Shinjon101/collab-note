@@ -39,7 +39,9 @@ const Header = () => {
         </Button>
 
         <SignedOut>
-          <SignInButton />
+          <SignInButton mode="modal">
+            <Button variant="default">Sign In</Button>
+          </SignInButton>
         </SignedOut>
         <SignedIn>
           <UserButton />
