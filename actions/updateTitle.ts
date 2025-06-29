@@ -5,6 +5,7 @@ import { db } from "@/db";
 import { documents } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { liveblocks } from "@/lib/liveblocks‑server";
 
 export const updateTitle = async (id: string, newTitle: string) => {
   const { userId } = await auth();
@@ -18,4 +19,9 @@ export const updateTitle = async (id: string, newTitle: string) => {
 
   revalidatePath("/");
   revalidatePath(`/documents/${id}`);
+
+  await liveblocks.broadcastEvent(id, {
+    type: "DOCUMENT_UPDATED",
+    title: newTitle,
+  });
 };

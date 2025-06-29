@@ -28,6 +28,12 @@ const Document = ({ id, isOwner }: Props) => {
       toast.error("This document was deleted by its owner.");
       router.push("/");
     }
+    if (event.type === "DOCUMENT_UPDATED") {
+      toast.info("Title updated by a member");
+      setInput(event.title);
+      setOriginalTitle(event.title);
+      router.refresh();
+    }
   });
 
   const [input, setInput] = useState("");
@@ -50,7 +56,7 @@ const Document = ({ id, isOwner }: Props) => {
       return;
     }
     if (trimmed === originalTitle) {
-      toast.info("No changes", { description: "Title is already up to date" });
+      toast.info("No changes", { description: "Title is already up to date" });
       return;
     }
     startTransition(async () => {
@@ -76,7 +82,6 @@ const Document = ({ id, isOwner }: Props) => {
               aria-label="Document title"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Document title"
               className="flex-1"
             />
             <Button

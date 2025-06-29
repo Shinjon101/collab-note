@@ -29,7 +29,7 @@ declare global {
     RoomEvent:
       | { type: "DOCUMENT_DELETED" }
       | { type: "INVITED_TO_DOCUMENT"; docId: string; role: "read" | "edit" }
-      | { type: "DOCUMENT_CREATED"; docId: string; title: string };
+      | { type: "DOCUMENT_UPDATED"; title: string };
 
     // Custom metadata set on threads, for useThreads, useCreateThread, etc.
     ThreadMetadata: {
