@@ -28,7 +28,7 @@ const DeleteDocButton = ({ id }: Props) => {
       try {
         setOpen(false);
         await deleteDocument(id);
-        toast.success("Document deleted.");
+        toast.success("Note deleted.");
         router.push("/");
         router.refresh();
       } catch (err) {

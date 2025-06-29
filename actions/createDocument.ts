@@ -1,16 +1,20 @@
 "use server";
-
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { db } from "@/db";
 import { documents, users, userRooms } from "@/db/schema";
 import { redirect } from "next/navigation";
 
 export async function createDocument() {
-  const { userId } = await auth.protect();
+  const { userId } = await auth();
+
+  if (!userId) {
+    redirect("/sign-up");
+  }
+
   const clerkUser = await currentUser();
 
-  if (!userId || !clerkUser) {
-    throw new Error("Unauthorized or missing user data.");
+  if (!clerkUser) {
+    redirect("/sign-up");
   }
 
   try {
@@ -26,13 +30,13 @@ export async function createDocument() {
           clerkUser.lastName ||
           "Anonymous",
       })
-      .onConflictDoNothing(); // If user already exists, skip
+      .onConflictDoNothing();
 
     // 2. Create the document
     const [doc] = await db
       .insert(documents)
       .values({
-        title: "New Doc",
+        title: "New Note",
         ownerId: userId,
       })
       .returning();
@@ -45,6 +49,8 @@ export async function createDocument() {
     });
 
     console.log("Document created:", doc.id);
+
+    // Redirect directly to the new document
     redirect(`/documents/${doc.id}`);
   } catch (error) {
     console.error("Error creating document:", error);
