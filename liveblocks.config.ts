@@ -26,10 +26,10 @@ declare global {
     };
 
     // Custom events, for useBroadcastEvent, useEventListener
-    RoomEvent: {};
-    // Example has two events, using a union
-    // | { type: "PLAY" }
-    // | { type: "REACTION"; emoji: "🔥" };
+    RoomEvent:
+      | { type: "DOCUMENT_DELETED" }
+      | { type: "INVITED_TO_DOCUMENT"; docId: string; role: "read" | "edit" }
+      | { type: "DOCUMENT_CREATED"; docId: string; title: string };
 
     // Custom metadata set on threads, for useThreads, useCreateThread, etc.
     ThreadMetadata: {

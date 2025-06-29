@@ -11,12 +11,25 @@ import InviteUserButton from "./InviteButton";
 import ManageUser from "./ManageUser";
 import { toast } from "sonner";
 
+import { useRouter } from "next/navigation";
+import { useEventListener } from "@liveblocks/react";
+
 interface Props {
-  id: string;
+  id: string; // document / room id
   isOwner: boolean;
 }
 
 const Document = ({ id, isOwner }: Props) => {
+  const router = useRouter();
+
+  /* ─── Listen for owner‑deletes‑doc event ────────── */
+  useEventListener(({ event }) => {
+    if (event.type === "DOCUMENT_DELETED") {
+      toast.error("This document was deleted by its owner.");
+      router.push("/");
+    }
+  });
+
   const [input, setInput] = useState("");
   const [originalTitle, setOriginalTitle] = useState("");
   const [isUpdating, startTransition] = useTransition();
@@ -31,26 +44,19 @@ const Document = ({ id, isOwner }: Props) => {
 
   const updateDocTitle = (e: FormEvent) => {
     e.preventDefault();
-    const trimmedInput = input.trim();
-
-    if (!trimmedInput) {
+    const trimmed = input.trim();
+    if (!trimmed) {
       toast.error("Error!", { description: "Title cannot be empty" });
       return;
     }
-
-    if (trimmedInput === originalTitle) {
-      toast.info("No changes", { description: "Title is already up to date" });
+    if (trimmed === originalTitle) {
+      toast.info("No changes", { description: "Title is already up to date" });
       return;
     }
-
     startTransition(async () => {
-      try {
-        await updateTitle(id, trimmedInput);
-        setOriginalTitle(trimmedInput);
-        toast.success("Success", { description: "Title updated" });
-      } catch (err) {
-        toast.error("Error!", { description: `Error: ${err}` });
-      }
+      await updateTitle(id, trimmed);
+      setOriginalTitle(trimmed);
+      toast.success("Success", { description: "Title updated" });
     });
   };
 
@@ -65,7 +71,6 @@ const Document = ({ id, isOwner }: Props) => {
           onSubmit={updateDocTitle}
           className="flex flex-col gap-4 sm:flex-row sm:items-center"
         >
-          {/* Input + update button */}
           <div className="flex w-full gap-2">
             <Input
               aria-label="Document title"
@@ -83,7 +88,7 @@ const Document = ({ id, isOwner }: Props) => {
             </Button>
           </div>
 
-          {/* Owner actions */}
+          {/* owner‑only buttons */}
           {isOwner && (
             <div className="flex gap-2">
               <DeleteDocButton id={id} />
@@ -95,12 +100,10 @@ const Document = ({ id, isOwner }: Props) => {
 
       <hr className="mt-3 mb-5" />
 
-      {/* Collaborator list */}
       <section className="mb-10" aria-label="Manage collaborators">
         <ManageUser />
       </section>
 
-      {/* Editor */}
       <main aria-label="Document editor">
         <Editor />
       </main>
