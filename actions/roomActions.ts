@@ -10,6 +10,7 @@ import {
 } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { liveblocks } from "@/lib/liveblocks‑server";
 
 /* ──────────────────────────────────────────────
  *  isOwner ─ check if current user owns the doc
@@ -92,4 +93,8 @@ export async function removeUserFromRoom(docId: string, targetId: string) {
     );
 
   revalidatePath(`/documents/${docId}`, "page");
+  await liveblocks.broadcastEvent(docId, {
+    type: "REMOVED_USER",
+    targetId,
+  });
 }

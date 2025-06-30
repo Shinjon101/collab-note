@@ -44,11 +44,11 @@ export async function inviteUser(
     .insert(documentCollaborators)
     .values({ userId: targetId, documentId: docId, role });
 
-  await liveblocks.broadcastEvent(`user:${targetId}`, {
+  /*   await liveblocks.broadcastEvent(`user:${targetId}`, {
     type: "INVITED_TO_DOCUMENT",
     docId: docId,
     role: role,
-  });
+  }); */
   revalidatePath(`/documents/${docId}`, "page");
   return { ok: true };
 }

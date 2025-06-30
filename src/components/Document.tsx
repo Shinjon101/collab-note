@@ -35,6 +35,13 @@ const Document = ({ id, isOwner, userId }: Props) => {
       setOriginalTitle(event.title);
       router.refresh();
     }
+    if (event.type === "REMOVED_USER") {
+      if (event.targetId === userId) {
+        toast.error("Removed by owner");
+        router.push("/");
+        router.refresh();
+      }
+    }
   });
 
   const [input, setInput] = useState("");
