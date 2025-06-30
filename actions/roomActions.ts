@@ -97,9 +97,18 @@ export async function removeUserFromRoom(docId: string, targetId: string) {
       )
     );
 
+  const [targetUser] = await db
+    .select({ name: users.name })
+    .from(users)
+    .where(eq(users.id, targetId));
+
+  const targetName = targetUser.name;
+  if (!targetName) throw new Error("Username not found");
+
   revalidatePath(`/documents/${docId}`, "page");
   await liveblocks.broadcastEvent(docId, {
     type: "REMOVED_USER",
     targetId,
+    targetName,
   });
 }

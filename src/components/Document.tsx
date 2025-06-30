@@ -44,6 +44,8 @@ const Document = ({ id, isOwner, userId }: Props) => {
         toast.error("Removed by owner");
         router.push("/");
         router.refresh();
+      } else {
+        toast.info(`${event.targetName} removed by Owner`);
       }
     }
     if (event.type === "UPDATE_ROLE" && event.targetId === userId) {
