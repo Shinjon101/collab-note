@@ -34,7 +34,8 @@ declare global {
           role: "read" | "edit";
         }
       | { type: "DOCUMENT_UPDATED"; title: string }
-      | { type: "REMOVED_USER"; targetId: string };
+      | { type: "REMOVED_USER"; targetId: string }
+      | { type: "UPDATE_ROLE"; targetId: string; newRole: "read" | "edit" };
 
     // Custom metadata set on threads, for useThreads, useCreateThread, etc.
     ThreadMetadata: {

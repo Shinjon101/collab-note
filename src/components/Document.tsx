@@ -12,7 +12,8 @@ import ManageUser from "./ManageUser";
 import { toast } from "sonner";
 
 import { useRouter } from "next/navigation";
-import { useEventListener } from "@liveblocks/react";
+import { useEventListener } from "@liveblocks/react/suspense";
+import { useSelf } from "@liveblocks/react";
 
 interface Props {
   id: string; // document / room id
@@ -21,8 +22,11 @@ interface Props {
 }
 
 const Document = ({ id, isOwner, userId }: Props) => {
+  const userInfo = useSelf((me) => me.info);
   const router = useRouter();
-
+  const [role, setRole] = useState<"read" | "edit">(
+    userInfo?.role as "read" | "edit"
+  );
   /* ─── Listen for doc events ────────── */
   useEventListener(({ event }) => {
     if (event.type === "DOCUMENT_DELETED") {
@@ -41,6 +45,15 @@ const Document = ({ id, isOwner, userId }: Props) => {
         router.push("/");
         router.refresh();
       }
+    }
+    if (event.type === "UPDATE_ROLE" && event.targetId === userId) {
+      toast.info(
+        event.newRole === "read"
+          ? "You are now a viewer"
+          : "You are now an editor"
+      );
+      setRole(event.newRole);
+      router.refresh();
     }
   });
 
@@ -118,7 +131,7 @@ const Document = ({ id, isOwner, userId }: Props) => {
       </section>
 
       <main aria-label="Document editor">
-        <Editor />
+        <Editor readOnly={role === "read"} />
       </main>
     </>
   );

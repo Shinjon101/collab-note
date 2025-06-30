@@ -1,32 +1,40 @@
-"use room";
+"use client";
+
 import { useRoom, useSelf } from "@liveblocks/react";
-import { useEffect, useMemo, useState } from "react";
-import * as Y from "yjs";
 import { LiveblocksYjsProvider } from "@liveblocks/yjs";
 import { useTheme } from "next-themes";
 import { BlockNoteView } from "@blocknote/shadcn";
 import { useCreateBlockNote } from "@blocknote/react";
-import stringToColor from "@/lib/stringToColor";
 import type { BlockNoteEditor } from "@blocknote/core";
+import * as Y from "yjs";
+import stringToColor from "@/lib/stringToColor";
+import { useEffect, useMemo, useState } from "react";
 
-type EditorProps = {
+/* --------------------------------------------------------------------------- */
+/*                                   TYPES                                     */
+/* --------------------------------------------------------------------------- */
+
+type BlockNoteProps = {
   doc: Y.Doc;
-  provider: any;
+  provider: LiveblocksYjsProvider;
+  readOnly: boolean;
   userInfo: {
     name: string;
     email: string;
-    role: string;
   };
 };
 
-const BlockNote = ({ doc, provider, userInfo }: EditorProps) => {
+type EditorWrapperProps = {
+  readOnly: boolean; // ← passed down from <Document />
+};
+
+const BlockNote = ({ doc, provider, readOnly, userInfo }: BlockNoteProps) => {
   const { theme } = useTheme();
   const darkMode = theme === "dark";
-  const readOnly = userInfo.role === "read";
 
   const editor: BlockNoteEditor = useCreateBlockNote(
-    useMemo(() => {
-      return {
+    useMemo(
+      () => ({
         collaboration: {
           provider,
           fragment: doc.getXmlFragment("document-store"),
@@ -35,8 +43,9 @@ const BlockNote = ({ doc, provider, userInfo }: EditorProps) => {
             color: stringToColor(userInfo.email),
           },
         },
-      };
-    }, [provider, doc, userInfo])
+      }),
+      [provider, doc, userInfo]
+    )
   );
 
   return (
@@ -51,21 +60,23 @@ const BlockNote = ({ doc, provider, userInfo }: EditorProps) => {
   );
 };
 
-const Editor = () => {
+export default function Editor({ readOnly }: EditorWrapperProps) {
   const room = useRoom();
-  const [doc, setDoc] = useState<Y.Doc>();
-  const [provider, setProvider] = useState<LiveblocksYjsProvider>();
+  const [doc, setDoc] = useState<Y.Doc | null>(null);
+  const [provider, setProvider] = useState<LiveblocksYjsProvider | null>(null);
   const userInfo = useSelf((me) => me.info);
 
+  /* create Yjs doc & provider once per room –––––––––––––––––––––––––––––––– */
   useEffect(() => {
     const yDoc = new Y.Doc();
     const yProvider = new LiveblocksYjsProvider(room, yDoc);
+
     setDoc(yDoc);
     setProvider(yProvider);
 
     return () => {
-      yDoc.destroy();
       yProvider.destroy();
+      yDoc.destroy();
     };
   }, [room]);
 
@@ -76,14 +87,12 @@ const Editor = () => {
       <BlockNote
         doc={doc}
         provider={provider}
+        readOnly={readOnly}
         userInfo={{
           name: userInfo.name ?? "Anonymous",
           email: userInfo.email ?? "anonymous@example.com",
-          role: userInfo.role ?? "read",
         }}
       />
     </section>
   );
-};
-
-export default Editor;
+}

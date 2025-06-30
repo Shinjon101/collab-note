@@ -71,6 +71,11 @@ export async function updateUserRole(
     .where(and(eq(userRooms.roomId, docId), eq(userRooms.userId, targetId)));
 
   revalidatePath(`/documents/${docId}`, "page");
+  await liveblocks.broadcastEvent(docId, {
+    type: "UPDATE_ROLE",
+    targetId,
+    newRole,
+  });
 }
 
 /* ──────────────────────────────────────────────
