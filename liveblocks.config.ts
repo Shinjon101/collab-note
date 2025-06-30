@@ -28,6 +28,7 @@ declare global {
     // Custom events, for useBroadcastEvent, useEventListener
     RoomEvent:
       | { type: "DOCUMENT_DELETED" }
+      | { type: "LEFT_DOC"; userId: string; userName: string }
       | {
           type: "INVITED_TO_DOCUMENT";
           docId: string;

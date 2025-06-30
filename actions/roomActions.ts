@@ -112,3 +112,33 @@ export async function removeUserFromRoom(docId: string, targetId: string) {
     targetName,
   });
 }
+/* ──────────────────────────────────────────────
+ *
+ * ────────────────────────────────────────────── */
+export async function leaveRoom(docId: string, userId: string) {
+  await db
+    .delete(userRooms)
+    .where(and(eq(userRooms.roomId, docId), eq(userRooms.userId, userId)));
+
+  await db
+    .delete(documentCollaborators)
+    .where(
+      and(
+        eq(documentCollaborators.documentId, docId),
+        eq(documentCollaborators.userId, userId)
+      )
+    );
+  const [user] = await db
+    .select({ name: users.name })
+    .from(users)
+    .where(eq(users.id, userId));
+
+  const userName = user.name;
+  if (!userName) throw new Error("Username not found");
+
+  await liveblocks.broadcastEvent(docId, {
+    type: "LEFT_DOC",
+    userId,
+    userName,
+  });
+}

@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useEventListener } from "@liveblocks/react/suspense";
 import { useSelf } from "@liveblocks/react";
+import LeaveRoomButton from "./LeaveRoomButton";
 
 interface Props {
   id: string; // document / room id
@@ -28,10 +29,17 @@ const Document = ({ id, isOwner, userId }: Props) => {
     userInfo?.role as "read" | "edit"
   );
   /* ─── Listen for doc events ────────── */
-  useEventListener(({ event }) => {
+  useEventListener(({ event, user }) => {
     if (event.type === "DOCUMENT_DELETED") {
       toast.error("This document was deleted by its owner.");
       router.push("/");
+    }
+
+    if (event.type === "LEFT_DOC") {
+      if (event.userId !== userId) {
+        toast.info(`${event.userName} left the room.`);
+      }
+      router.refresh();
     }
     if (event.type === "DOCUMENT_UPDATED") {
       toast.info("Title updated by a member");
@@ -115,6 +123,7 @@ const Document = ({ id, isOwner, userId }: Props) => {
               {isUpdating ? "Updating…" : "Update"}
             </Button>
           </div>
+          {!isOwner && <LeaveRoomButton docId={id} userId={userId} />}
 
           {/* owner‑only buttons */}
           {isOwner && (
