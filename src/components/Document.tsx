@@ -17,12 +17,13 @@ import { useEventListener } from "@liveblocks/react";
 interface Props {
   id: string; // document / room id
   isOwner: boolean;
+  userId: string;
 }
 
-const Document = ({ id, isOwner }: Props) => {
+const Document = ({ id, isOwner, userId }: Props) => {
   const router = useRouter();
 
-  /* ─── Listen for owner‑deletes‑doc event ────────── */
+  /* ─── Listen for doc events ────────── */
   useEventListener(({ event }) => {
     if (event.type === "DOCUMENT_DELETED") {
       toast.error("This document was deleted by its owner.");

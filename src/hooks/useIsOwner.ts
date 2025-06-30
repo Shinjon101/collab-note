@@ -28,7 +28,7 @@ export function useIsOwner(docId: string) {
     let active = true;
 
     (async () => {
-      const owns = await isOwner(docId);
+      const { owns } = await isOwner(docId);
       if (active) setOwnerState(owns);
     })();
 

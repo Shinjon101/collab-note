@@ -2,18 +2,31 @@
 
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/db";
-import { documents } from "@/db/schema";
+import { documents, users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
-export async function isOwner(docId: string): Promise<boolean> {
+interface returnType {
+  owns: boolean;
+  ownerName: string;
+}
+
+export async function isOwner(docId: string): Promise<returnType> {
   const { userId } = await auth();
-  if (!userId) return false; // not signed in → definitely not owner
+  if (!userId) return { owns: false, ownerName: "" }; // not signed in → definitely not owner
 
   const [row] = await db
     .select({ ownerId: documents.ownerId })
     .from(documents)
     .where(eq(documents.id, docId));
 
+  const [ownerName] = await db
+    .select({ name: users.id })
+    .from(users)
+    .where(eq(users.id, row.ownerId));
+
   // row is undefined if the doc doesn't exist
-  return row?.ownerId === userId;
+  const owns = row?.ownerId === userId;
+  const name = ownerName.name;
+
+  return { owns, ownerName: name };
 }

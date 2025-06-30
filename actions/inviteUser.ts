@@ -6,6 +6,7 @@ import { users, userRooms, documentCollaborators } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { isOwner } from "./isOwner";
+import { liveblocks } from "@/lib/liveblocks‑server";
 
 export async function inviteUser(
   docId: string,
@@ -17,8 +18,8 @@ export async function inviteUser(
   if (!userId) return { ok: false, error: "Unauthorized" };
 
   // Owner check
-  const owner = await isOwner(docId);
-  if (!owner) return { ok: false, error: "Forbidden" };
+  const { owns } = await isOwner(docId);
+  if (!owns) return { ok: false, error: "Forbidden" };
 
   // Get user by email
   const [target] = await db
@@ -37,14 +38,17 @@ export async function inviteUser(
 
   if (existing) return { ok: false, error: "User already invited" };
 
-  // Add to ACL tables
+  // Add to tables
   await db.insert(userRooms).values({ userId: targetId, roomId: docId, role });
   await db
     .insert(documentCollaborators)
     .values({ userId: targetId, documentId: docId, role });
 
-  // Refresh page
+  await liveblocks.broadcastEvent(`user:${targetId}`, {
+    type: "INVITED_TO_DOCUMENT",
+    docId: docId,
+    role: role,
+  });
   revalidatePath(`/documents/${docId}`, "page");
-
   return { ok: true };
 }

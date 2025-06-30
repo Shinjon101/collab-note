@@ -28,7 +28,11 @@ declare global {
     // Custom events, for useBroadcastEvent, useEventListener
     RoomEvent:
       | { type: "DOCUMENT_DELETED" }
-      | { type: "INVITED_TO_DOCUMENT"; docId: string; role: "read" | "edit" }
+      | {
+          type: "INVITED_TO_DOCUMENT";
+          docId: string;
+          role: "read" | "edit";
+        }
       | { type: "DOCUMENT_UPDATED"; title: string };
 
     // Custom metadata set on threads, for useThreads, useCreateThread, etc.
