@@ -8,15 +8,14 @@ export async function createDocument() {
   const { userId } = await auth();
 
   if (!userId) {
-    redirect("/sign-up");
+    return { success: false, reason: "unauthenticated" };
   }
 
   const clerkUser = await currentUser();
 
   if (!clerkUser) {
-    redirect("/sign-up");
+    return { success: false, reason: "missing_clerk_user" };
   }
-
   try {
     // 1. Upsert user info
     await db

@@ -3,19 +3,33 @@
 import {
   SignedIn,
   SignedOut,
+  SignIn,
   SignInButton,
   UserButton,
 } from "@clerk/clerk-react";
 import { useUser } from "@clerk/nextjs";
+
 import { useTheme } from "next-themes";
 import { Button } from "./ui/button";
 import { MoonIcon, SunIcon } from "lucide-react";
 import HeaderSkeleton from "./HeaderSkeleton";
+import { useEffect } from "react";
+import { addUser } from "../../actions/addUser";
 
 const Header = () => {
   const { user, isLoaded } = useUser();
   const { theme, setTheme } = useTheme();
   const darkMode = theme === "dark";
+
+  useEffect(() => {
+    if (isLoaded && user) {
+      addUser().then((res) => {
+        if (!res?.success && res?.reason === "unauthenticated") {
+          <SignIn />;
+        }
+      });
+    }
+  }, [isLoaded, user]);
 
   if (!isLoaded) {
     return <HeaderSkeleton />;
