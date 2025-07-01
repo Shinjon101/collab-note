@@ -7,6 +7,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
+  DialogClose,
 } from "@/components/ui/dialog";
 import {
   Select,
@@ -40,6 +42,7 @@ export default function ManageUser() {
   const [ownerId, setOwnerId] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const [pending, startTransition] = useTransition();
+  const [openConfirm, setOpenConfirm] = useState(false);
 
   //fetch roster each time dialog opens
   useEffect(() => {
@@ -72,11 +75,10 @@ export default function ManageUser() {
 
   // remove user
   const onRemove = (userId: string) => {
-    if (!confirm("Are you sure you want to remove this user?")) return;
-
     startTransition(async () => {
       try {
         await removeUserFromRoom(room.id, userId);
+        setOpenConfirm(false);
         toast.success("User removed");
         setMembers((prev) => prev.filter((m) => m.id !== userId));
       } catch (_err) {
@@ -132,14 +134,38 @@ export default function ManageUser() {
                       <SelectItem value="read">Viewer</SelectItem>
                     </SelectContent>
                   </Select>
-                  <Button
-                    variant="destructive"
-                    size="icon"
-                    onClick={() => onRemove(member.id)}
-                    disabled={pending}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+
+                  <Dialog open={openConfirm} onOpenChange={setOpenConfirm}>
+                    <Button asChild variant="destructive" size="icon">
+                      <DialogTrigger>
+                        <Trash2 className="h-4 w-4" />
+                      </DialogTrigger>
+                    </Button>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Remove this user</DialogTitle>
+                        <DialogDescription>
+                          Are you sure you want to remove this user ?
+                        </DialogDescription>
+                      </DialogHeader>
+
+                      <DialogFooter className="sm:justify-end gap-2">
+                        <Button
+                          variant="destructive"
+                          onClick={() => onRemove(member.id)}
+                          disabled={pending}
+                        >
+                          {pending ? "Removing..." : "Remove"}
+                        </Button>
+
+                        <DialogClose asChild>
+                          <Button type="button" variant="secondary">
+                            Cancel
+                          </Button>
+                        </DialogClose>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
                 </div>
               )}
             </div>
