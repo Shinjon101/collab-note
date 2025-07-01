@@ -2,7 +2,12 @@
 
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/db";
-import { users, userRooms, documentCollaborators } from "@/db/schema";
+import {
+  users,
+  userRooms,
+  documentCollaborators,
+  documents,
+} from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { isOwner } from "./isOwner";
@@ -18,7 +23,7 @@ export async function inviteUser(
   if (!userId) return { ok: false, error: "Unauthorized" };
 
   // Owner check
-  const { owns } = await isOwner(docId);
+  const { owns, ownerName } = await isOwner(docId);
   if (!owns) return { ok: false, error: "Forbidden" };
 
   // Get user by email
@@ -44,11 +49,20 @@ export async function inviteUser(
     .insert(documentCollaborators)
     .values({ userId: targetId, documentId: docId, role });
 
-  /*   await liveblocks.broadcastEvent(`user:${targetId}`, {
+  const [docTitle] = await db
+    .select({ titel: documents.title })
+    .from(documents)
+    .where(eq(documents.id, docId));
+
+  const title = docTitle.titel;
+  await liveblocks.broadcastEvent(`user:${targetId}:inbox`, {
     type: "INVITED_TO_DOCUMENT",
-    docId: docId,
-    role: role,
-  }); */
+    docId,
+    role,
+    ownerName,
+    title,
+  });
+
   revalidatePath(`/documents/${docId}`, "page");
   return { ok: true };
 }

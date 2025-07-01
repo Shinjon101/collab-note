@@ -1,6 +1,3 @@
-import { getSharedDocs } from "../../actions/getSharedDocs";
-import { getUserDocs } from "../../actions/getUserDocuments";
-import SidebarDocuments from "../components/SideBarDocuments"; // adjust import if needed
 import NewDocumentButton from "./NewDocumentButton";
 import {
   Sheet,
@@ -10,15 +7,14 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { MenuIcon } from "lucide-react";
+import SidebarDocumentsWrapper from "./SidebarDocumentsWrapper";
+import SidebarDocumentsServer from "./SidebarDocumentsServer";
 
 export default async function SideBar() {
-  const createdDocs = await getUserDocs();
-  const sharedDocs = await getSharedDocs();
-
   const menuOptions = (
     <>
       <NewDocumentButton />
-      <SidebarDocuments createdDocs={createdDocs} sharedDocs={sharedDocs} />
+      <SidebarDocumentsServer />
     </>
   );
 

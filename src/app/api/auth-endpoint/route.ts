@@ -1,4 +1,3 @@
-// src/app/api/auth-endpoint/route.ts
 import { Liveblocks } from "@liveblocks/node";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { db } from "@/db";
@@ -21,7 +20,7 @@ export async function POST(req: Request) {
 
     const clerkUser = await currentUser();
     if (!clerkUser) {
-      console.log("No clerk user found");
+      console.log("No Clerk user found");
       return new Response("User not found", { status: 404 });
     }
 
@@ -37,7 +36,7 @@ export async function POST(req: Request) {
     let roomId;
     try {
       const body = await req.json();
-      roomId = body.roomId || body.room; // Support both roomId and room
+      roomId = body.roomId || body.room; // Support both "roomId" and "room"
       console.log("Requested room:", roomId);
     } catch (error) {
       console.error("Error parsing request body:", error);
@@ -49,7 +48,27 @@ export async function POST(req: Request) {
       return new Response("Room ID required", { status: 400 });
     }
 
-    // Verify room exists
+    // Handle special inbox room: user:{userId}:inbox
+    const isInboxRoom = roomId.startsWith("user:") && roomId.endsWith(":inbox");
+    if (isInboxRoom) {
+      const session = liveblocks.prepareSession(userId, {
+        userInfo: {
+          name: userName,
+          email: userEmail,
+          avatar: userAvatar,
+          role: "read",
+        },
+      });
+
+      session.allow(roomId, session.FULL_ACCESS); // grant read/write to own inbox
+      const { status, body } = await session.authorize();
+      console.log("Authorized inbox room for user:", userId);
+      return new Response(body, { status });
+    }
+
+    // Otherwise — it's a document room
+
+    // Check if document exists
     const [roomDoc] = await db
       .select()
       .from(documents)
@@ -60,13 +79,12 @@ export async function POST(req: Request) {
       return new Response("Room not found", { status: 404 });
     }
 
-    // Check user access - check if user is owner OR has access via userRooms OR documentCollaborators
+    // Check if user has access
     const isOwner = roomDoc.ownerId === userId;
 
     let hasAccess = isOwner;
 
     if (!hasAccess) {
-      // Check userRooms table
       const userRoomAccess = await db
         .select()
         .from(userRooms)
@@ -76,7 +94,6 @@ export async function POST(req: Request) {
     }
 
     if (!hasAccess) {
-      // Check documentCollaborators table as fallback
       const collaboratorAccess = await db
         .select()
         .from(documentCollaborators)
@@ -92,24 +109,23 @@ export async function POST(req: Request) {
 
     if (!hasAccess) {
       console.log("Access denied for user:", userId, "room:", roomId);
-      console.log(
-        "User is not owner, not in userRooms, and not in documentCollaborators"
-      );
       return new Response("Access denied", { status: 403 });
     }
 
+    // Determine role
     let role: "read" | "edit" | null = null;
 
-    if (roomDoc.ownerId === userId) {
-      role = "edit"; // owner has full rights
+    if (isOwner) {
+      role = "edit";
     } else {
       const [ur] = await db
         .select({ role: userRooms.role })
         .from(userRooms)
         .where(and(eq(userRooms.userId, userId), eq(userRooms.roomId, roomId)));
-      if (ur) role = ur.role as "read" | "edit";
-      else {
-        // fallback to documentCollaborators
+
+      if (ur) {
+        role = ur.role as "read" | "edit";
+      } else {
         const [col] = await db
           .select({ role: documentCollaborators.role })
           .from(documentCollaborators)
@@ -119,7 +135,10 @@ export async function POST(req: Request) {
               eq(documentCollaborators.documentId, roomId)
             )
           );
-        if (col) role = col.role as "read" | "edit";
+
+        if (col) {
+          role = col.role as "read" | "edit";
+        }
       }
     }
 
@@ -127,34 +146,22 @@ export async function POST(req: Request) {
       return new Response("Access denied", { status: 403 });
     }
 
-    console.log(
-      "Access granted - User:",
-      userId,
-      "Room:",
-      roomId,
-      "IsOwner:",
-      isOwner
-    );
-
-    console.log("Creating Liveblocks session for user:", userId, role);
-
-    // Create Liveblocks session with permissions
     const session = liveblocks.prepareSession(userId, {
       userInfo: {
         name: userName,
         email: userEmail,
         avatar: userAvatar,
-        role: role,
+        role,
       },
     });
+
     if (role === "edit") {
-      session.allow(roomId, session.FULL_ACCESS); // read + write
+      session.allow(roomId, session.FULL_ACCESS);
     } else {
-      session.allow(roomId, session.READ_ACCESS); // read-only
+      session.allow(roomId, session.READ_ACCESS);
     }
 
     const { status, body } = await session.authorize();
-
     console.log("Liveblocks authorization successful:", status);
     return new Response(body, { status });
   } catch (error) {

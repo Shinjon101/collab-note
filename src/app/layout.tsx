@@ -6,6 +6,7 @@ import Header from "@/components/Header";
 import SideBar from "@/components/SideBar";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Toaster } from "@/components/ui/sonner";
+import { LiveBlocksGlobalProvider } from "@/components/LiveBlocksGlobalProvider";
 
 export const metadata: Metadata = {
   title: "CollabNote",
@@ -22,25 +23,27 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en" suppressHydrationWarning>
-        <body>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <Header />
-            <div className="flex min-h-screen">
-              <SideBar />
-              <div className="flex-1 p-5 overflow-y-auto scrollbar-hide">
-                {children}
+      <LiveBlocksGlobalProvider>
+        <html lang="en" suppressHydrationWarning>
+          <body>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <Header />
+              <div className="flex min-h-screen">
+                <SideBar />
+                <div className="flex-1 p-5 overflow-y-auto scrollbar-hide">
+                  {children}
+                </div>
               </div>
-            </div>
-            <Toaster position="top-center" />
-          </ThemeProvider>
-        </body>
-      </html>
+              <Toaster position="top-center" />
+            </ThemeProvider>
+          </body>
+        </html>
+      </LiveBlocksGlobalProvider>
     </ClerkProvider>
   );
 }

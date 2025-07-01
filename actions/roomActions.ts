@@ -11,6 +11,7 @@ import {
 import { eq, and } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { liveblocks } from "@/lib/liveblocks‑server";
+import { redirect } from "next/navigation";
 
 /* ──────────────────────────────────────────────
  *  isOwner ─ check if current user owns the doc
@@ -141,4 +142,5 @@ export async function leaveRoom(docId: string, userId: string) {
     userId,
     userName,
   });
+  revalidatePath("/");
 }

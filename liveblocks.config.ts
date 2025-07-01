@@ -33,6 +33,8 @@ declare global {
           type: "INVITED_TO_DOCUMENT";
           docId: string;
           role: "read" | "edit";
+          ownerName: string;
+          title: string;
         }
       | { type: "DOCUMENT_UPDATED"; title: string; userId: string }
       | { type: "REMOVED_USER"; targetId: string; targetName: string }

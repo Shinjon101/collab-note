@@ -3,6 +3,7 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import { db } from "@/db";
 import { documents, users, userRooms } from "@/db/schema";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 export async function createDocument() {
   const { userId } = await auth();
@@ -50,6 +51,7 @@ export async function createDocument() {
     console.log("Document created:", doc.id);
 
     // Redirect directly to the new document
+    revalidatePath("/");
     redirect(`/documents/${doc.id}`);
   } catch (error) {
     console.error("Error creating document:", error);

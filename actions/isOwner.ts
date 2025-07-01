@@ -20,7 +20,7 @@ export async function isOwner(docId: string): Promise<returnType> {
     .where(eq(documents.id, docId));
 
   const [ownerName] = await db
-    .select({ name: users.id })
+    .select({ name: users.name })
     .from(users)
     .where(eq(users.id, row.ownerId));
 
@@ -28,5 +28,5 @@ export async function isOwner(docId: string): Promise<returnType> {
   const owns = row?.ownerId === userId;
   const name = ownerName.name;
 
-  return { owns, ownerName: name };
+  return { owns, ownerName: name! };
 }
