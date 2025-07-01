@@ -133,8 +133,9 @@ const Document = ({ id, isOwner, userId }: Props) => {
             >
               {isUpdating ? "Updating…" : "Update"}
             </Button>
+
+            {!isOwner && <LeaveRoomButton docId={id} userId={userId} />}
           </div>
-          {!isOwner && <LeaveRoomButton docId={id} userId={userId} />}
 
           {/* owner‑only buttons */}
           {isOwner && (
