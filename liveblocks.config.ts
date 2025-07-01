@@ -27,14 +27,14 @@ declare global {
 
     // Custom events, for useBroadcastEvent, useEventListener
     RoomEvent:
-      | { type: "DOCUMENT_DELETED" }
+      | { type: "DOCUMENT_DELETED"; userId: string }
       | { type: "LEFT_DOC"; userId: string; userName: string }
       | {
           type: "INVITED_TO_DOCUMENT";
           docId: string;
           role: "read" | "edit";
         }
-      | { type: "DOCUMENT_UPDATED"; title: string }
+      | { type: "DOCUMENT_UPDATED"; title: string; userId: string }
       | { type: "REMOVED_USER"; targetId: string; targetName: string }
       | { type: "UPDATE_ROLE"; targetId: string; newRole: "read" | "edit" };
 

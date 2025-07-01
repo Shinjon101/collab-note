@@ -1,6 +1,12 @@
 "use client";
 
-import React, { FormEvent, useEffect, useState, useTransition } from "react";
+import React, {
+  FormEvent,
+  use,
+  useEffect,
+  useState,
+  useTransition,
+} from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { updateTitle } from "../../actions/updateTitle";
@@ -15,6 +21,7 @@ import { useRouter } from "next/navigation";
 import { useEventListener } from "@liveblocks/react/suspense";
 import { useSelf } from "@liveblocks/react";
 import LeaveRoomButton from "./LeaveRoomButton";
+import { log } from "console";
 
 interface Props {
   id: string; // document / room id
@@ -29,9 +36,11 @@ const Document = ({ id, isOwner, userId }: Props) => {
     userInfo?.role as "read" | "edit"
   );
   /* ─── Listen for doc events ────────── */
-  useEventListener(({ event, user }) => {
+  useEventListener(({ event }) => {
     if (event.type === "DOCUMENT_DELETED") {
-      toast.error("This document was deleted by its owner.");
+      if (event.userId !== userId) {
+        toast.error("This document was deleted by its owner.");
+      }
       router.push("/");
     }
 
@@ -42,7 +51,9 @@ const Document = ({ id, isOwner, userId }: Props) => {
       router.refresh();
     }
     if (event.type === "DOCUMENT_UPDATED") {
-      toast.info("Title updated by a member");
+      if (event.userId !== userId) {
+        toast.info("Title updated by a member");
+      }
       setInput(event.title);
       setOriginalTitle(event.title);
       router.refresh();

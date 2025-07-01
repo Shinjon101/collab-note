@@ -23,5 +23,6 @@ export const updateTitle = async (id: string, newTitle: string) => {
   await liveblocks.broadcastEvent(id, {
     type: "DOCUMENT_UPDATED",
     title: newTitle,
+    userId,
   });
 };
