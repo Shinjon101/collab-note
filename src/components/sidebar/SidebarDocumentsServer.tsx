@@ -1,5 +1,5 @@
-import { getUserDocs } from "../../actions/getUserDocuments";
-import { getSharedDocs } from "../../actions/getSharedDocs";
+import { getUserDocs } from "../../../actions/getUserDocuments";
+import { getSharedDocs } from "../../../actions/getSharedDocs";
 import SidebarDocumentsWrapper from "./SidebarDocumentsWrapper";
 import { auth } from "@clerk/nextjs/server";
 

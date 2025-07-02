@@ -19,7 +19,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { MailPlus } from "lucide-react";
-import { inviteUser } from "../../actions/inviteUser";
+import { inviteUser } from "../../../actions/inviteUser";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 

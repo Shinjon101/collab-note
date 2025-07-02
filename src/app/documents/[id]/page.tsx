@@ -1,5 +1,5 @@
 // src/app/documents/[id]/page.tsx
-import Document from "@/components/Document";
+import Document from "@/components/document/Document";
 import { isOwner } from "../../../../actions/isOwner";
 import { auth } from "@clerk/nextjs/server";
 

@@ -11,15 +11,16 @@ import {
   DialogTrigger,
   DialogClose,
 } from "@/components/ui/dialog";
-import { Button } from "./ui/button";
-import { deleteDocument } from "../../actions/deleteDocument";
+import { Button } from "../ui/button";
+import { leaveRoom } from "../../../actions/roomActions";
 import { toast } from "sonner";
 
 type Props = {
-  id: string; // document ID
+  docId: string; // document ID
+  userId: string;
 };
 
-const DeleteDocButton = ({ id }: Props) => {
+const LeaveRoomButton = ({ docId, userId }: Props) => {
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -27,13 +28,13 @@ const DeleteDocButton = ({ id }: Props) => {
     startTransition(async () => {
       try {
         setOpen(false);
-        await deleteDocument(id);
-        toast.success("Note deleted.");
+        await leaveRoom(docId, userId);
+        toast.success("Left room");
         router.push("/");
         router.refresh();
       } catch (err) {
         toast.error(
-          err instanceof Error ? err.message : "Error deleting document"
+          err instanceof Error ? err.message : "Error leaving document"
         );
       }
     });
@@ -42,15 +43,14 @@ const DeleteDocButton = ({ id }: Props) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <Button asChild variant="destructive" className="cursor-pointer">
-        <DialogTrigger>Delete</DialogTrigger>
+        <DialogTrigger>Leave</DialogTrigger>
       </Button>
 
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Delete this document?</DialogTitle>
+          <DialogTitle>Leave this note?</DialogTitle>
           <DialogDescription>
-            This action cannot be undone. It will permanently remove the
-            document and every collaborator’s access.
+            are you sure you want to leave this note ?
           </DialogDescription>
         </DialogHeader>
 
@@ -62,7 +62,7 @@ const DeleteDocButton = ({ id }: Props) => {
             disabled={isPending}
             className="cursor-pointer"
           >
-            {isPending ? "Deleting…" : "Delete"}
+            {isPending ? "Leaving…" : "Leave"}
           </Button>
 
           <DialogClose asChild>
@@ -76,4 +76,4 @@ const DeleteDocButton = ({ id }: Props) => {
   );
 };
 
-export default DeleteDocButton;
+export default LeaveRoomButton;

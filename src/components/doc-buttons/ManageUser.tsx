@@ -25,7 +25,7 @@ import {
   getRoomMembers,
   removeUserFromRoom,
   updateUserRole,
-} from "../../actions/roomActions";
+} from "../../../actions/roomActions";
 import { toast } from "sonner";
 
 type Member = {

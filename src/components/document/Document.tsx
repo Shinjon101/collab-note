@@ -1,27 +1,20 @@
 "use client";
 
-import React, {
-  FormEvent,
-  use,
-  useEffect,
-  useState,
-  useTransition,
-} from "react";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
-import { updateTitle } from "../../actions/updateTitle";
-import { getTitle } from "../../actions/getTitle";
-import Editor from "./Editor";
-import DeleteDocButton from "./DeleteDocButton";
-import InviteUserButton from "./InviteButton";
-import ManageUser from "./ManageUser";
+import { FormEvent, useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
+import { getTitle } from "../../../actions/getTitle";
+import { updateTitle } from "../../../actions/updateTitle";
+import DeleteDocButton from "../doc-buttons/DeleteDocButton";
+import InviteUserButton from "../doc-buttons/InviteButton";
+import ManageUser from "../doc-buttons/ManageUser";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import Editor from "./Editor";
 
-import { useRouter } from "next/navigation";
-import { useEventListener } from "@liveblocks/react/suspense";
 import { useSelf } from "@liveblocks/react";
-import LeaveRoomButton from "./LeaveRoomButton";
-import { log } from "console";
+import { useEventListener } from "@liveblocks/react/suspense";
+import { useRouter } from "next/navigation";
+import LeaveRoomButton from "../doc-buttons/LeaveRoomButton";
 
 interface Props {
   id: string; // document / room id

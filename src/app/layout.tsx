@@ -3,10 +3,10 @@ import "@blocknote/core/style.css";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import Header from "@/components/Header";
-import SideBar from "@/components/SideBar";
-import { ThemeProvider } from "@/components/ThemeProvider";
+import SideBar from "@/components/sidebar/SideBar";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { Toaster } from "@/components/ui/sonner";
-import { LiveBlocksGlobalProvider } from "@/components/LiveBlocksGlobalProvider";
+import { LiveBlocksGlobalProvider } from "@/components/providers/LiveBlocksGlobalProvider";
 
 export const metadata: Metadata = {
   title: "CollabNote",

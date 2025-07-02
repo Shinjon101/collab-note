@@ -1,8 +1,8 @@
 "use client";
 
 import { useTransition } from "react";
-import { Button } from "./ui/button";
-import { createDocument } from "../../actions/createDocument";
+import { Button } from "../ui/button";
+import { createDocument } from "../../../actions/createDocument";
 import { toast } from "sonner";
 import { SignUpButton, useAuth } from "@clerk/nextjs";
 

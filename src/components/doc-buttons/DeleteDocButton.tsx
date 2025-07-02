@@ -1,26 +1,25 @@
 "use client";
-import { useRouter } from "next/navigation";
-import React, { useTransition, useState } from "react";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogClose,
 } from "@/components/ui/dialog";
-import { Button } from "./ui/button";
-import { leaveRoom } from "../../actions/roomActions";
+import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
 import { toast } from "sonner";
+import { deleteDocument } from "../../../actions/deleteDocument";
+import { Button } from "../ui/button";
 
 type Props = {
-  docId: string; // document ID
-  userId: string;
+  id: string; // document ID
 };
 
-const LeaveRoomButton = ({ docId, userId }: Props) => {
+const DeleteDocButton = ({ id }: Props) => {
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -28,13 +27,13 @@ const LeaveRoomButton = ({ docId, userId }: Props) => {
     startTransition(async () => {
       try {
         setOpen(false);
-        await leaveRoom(docId, userId);
-        toast.success("Left room");
+        await deleteDocument(id);
+        toast.success("Note deleted.");
         router.push("/");
         router.refresh();
       } catch (err) {
         toast.error(
-          err instanceof Error ? err.message : "Error leaving document"
+          err instanceof Error ? err.message : "Error deleting document"
         );
       }
     });
@@ -43,14 +42,15 @@ const LeaveRoomButton = ({ docId, userId }: Props) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <Button asChild variant="destructive" className="cursor-pointer">
-        <DialogTrigger>Leave</DialogTrigger>
+        <DialogTrigger>Delete</DialogTrigger>
       </Button>
 
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Leave this note?</DialogTitle>
+          <DialogTitle>Delete this document?</DialogTitle>
           <DialogDescription>
-            are you sure you want to leave this note ?
+            This action cannot be undone. It will permanently remove the
+            document and every collaborator’s access.
           </DialogDescription>
         </DialogHeader>
 
@@ -62,7 +62,7 @@ const LeaveRoomButton = ({ docId, userId }: Props) => {
             disabled={isPending}
             className="cursor-pointer"
           >
-            {isPending ? "Leaving…" : "Leave"}
+            {isPending ? "Deleting…" : "Delete"}
           </Button>
 
           <DialogClose asChild>
@@ -76,4 +76,4 @@ const LeaveRoomButton = ({ docId, userId }: Props) => {
   );
 };
 
-export default LeaveRoomButton;
+export default DeleteDocButton;

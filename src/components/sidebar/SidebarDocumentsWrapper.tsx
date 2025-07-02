@@ -4,7 +4,7 @@ import { RoomProvider, useEventListener } from "@liveblocks/react";
 import { useUser } from "@clerk/nextjs";
 import { useEffect, useState, useCallback } from "react";
 import SidebarDocuments from "./SideBarDocuments";
-import { getSharedDocs } from "../../actions/getSharedDocs";
+import { getSharedDocs } from "../../../actions/getSharedDocs";
 import { toast } from "sonner";
 
 interface Props {
@@ -17,7 +17,6 @@ function SidebarRealtime({ initialCreated, initialShared, userId }: Props) {
   const [createdDocs, setCreatedDocs] = useState(initialCreated);
   const [sharedDocs, setSharedDocs] = useState(initialShared);
 
-  // 🧠 Keep state in sync with server-rendered values
   useEffect(() => setCreatedDocs(initialCreated), [initialCreated]);
   useEffect(() => setSharedDocs(initialShared), [initialShared]);
 
@@ -26,7 +25,6 @@ function SidebarRealtime({ initialCreated, initialShared, userId }: Props) {
     setSharedDocs(docs);
   }, []);
 
-  // Listen for invite events (Liveblocks)
   useEventListener(({ event }) => {
     if (event.type === "INVITED_TO_DOCUMENT") {
       refetchShared();

@@ -1,4 +1,4 @@
-import RoomProvider from "@/components/RoomProvider";
+import RoomProvider from "@/components/providers/RoomProvider";
 import { auth } from "@clerk/nextjs/server";
 
 interface DocLayoutProps {

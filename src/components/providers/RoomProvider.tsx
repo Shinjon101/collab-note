@@ -5,7 +5,7 @@ import {
 } from "@liveblocks/react/suspense";
 
 import LiveCursorProvider from "./LiveCursorProvider";
-import DocumentSkeleton from "./DocumentSkelton";
+import DocumentSkeleton from "../DocumentSkelton";
 
 const RoomProvider = ({
   roomID,
