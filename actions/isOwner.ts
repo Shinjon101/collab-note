@@ -12,7 +12,7 @@ interface returnType {
 
 export async function isOwner(docId: string): Promise<returnType> {
   const { userId } = await auth();
-  if (!userId) return { owns: false, ownerName: "" }; // not signed in → definitely not owner
+  if (!userId) return { owns: false, ownerName: "" };
 
   const [row] = await db
     .select({ ownerId: documents.ownerId })
@@ -24,7 +24,6 @@ export async function isOwner(docId: string): Promise<returnType> {
     .from(users)
     .where(eq(users.id, row.ownerId));
 
-  // row is undefined if the doc doesn't exist
   const owns = row?.ownerId === userId;
   const name = ownerName.name;
 

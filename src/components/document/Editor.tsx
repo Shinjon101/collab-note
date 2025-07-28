@@ -10,10 +10,6 @@ import * as Y from "yjs";
 import stringToColor from "@/lib/stringToColor";
 import { useEffect, useMemo, useState } from "react";
 
-/* --------------------------------------------------------------------------- */
-/*                                   TYPES                                     */
-/* --------------------------------------------------------------------------- */
-
 type BlockNoteProps = {
   doc: Y.Doc;
   provider: LiveblocksYjsProvider;
@@ -25,7 +21,7 @@ type BlockNoteProps = {
 };
 
 type EditorWrapperProps = {
-  readOnly: boolean; // ← passed down from <Document />
+  readOnly: boolean;
 };
 
 const BlockNote = ({ doc, provider, readOnly, userInfo }: BlockNoteProps) => {
@@ -66,7 +62,6 @@ export default function Editor({ readOnly }: EditorWrapperProps) {
   const [provider, setProvider] = useState<LiveblocksYjsProvider | null>(null);
   const userInfo = useSelf((me) => me.info);
 
-  /* create Yjs doc & provider once per room –––––––––––––––––––––––––––––––– */
   useEffect(() => {
     const yDoc = new Y.Doc();
     const yProvider = new LiveblocksYjsProvider(room, yDoc);

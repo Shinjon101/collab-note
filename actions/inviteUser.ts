@@ -18,15 +18,12 @@ export async function inviteUser(
   email: string,
   role: "read" | "edit"
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  // Auth check
   const { userId } = await auth();
   if (!userId) return { ok: false, error: "Unauthorized" };
 
-  // Owner check
   const { owns, ownerName } = await isOwner(docId);
   if (!owns) return { ok: false, error: "Forbidden" };
 
-  // Get user by email
   const [target] = await db
     .select({ id: users.id })
     .from(users)
@@ -35,7 +32,6 @@ export async function inviteUser(
   if (!target) return { ok: false, error: "User not found" };
   const targetId = target.id;
 
-  // Check if already added
   const [existing] = await db
     .select()
     .from(userRooms)
@@ -43,7 +39,6 @@ export async function inviteUser(
 
   if (existing) return { ok: false, error: "User already invited" };
 
-  // Add to tables
   await db.insert(userRooms).values({ userId: targetId, roomId: docId, role });
   await db
     .insert(documentCollaborators)

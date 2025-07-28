@@ -18,7 +18,6 @@ export async function createDocument() {
     return { success: false, reason: "missing_clerk_user" };
   }
   try {
-    // 1. Upsert user info
     await db
       .insert(users)
       .values({
@@ -32,7 +31,6 @@ export async function createDocument() {
       })
       .onConflictDoNothing();
 
-    // 2. Create the document
     const [doc] = await db
       .insert(documents)
       .values({
@@ -41,7 +39,6 @@ export async function createDocument() {
       })
       .returning();
 
-    // 3. Link user to the room (document)
     await db.insert(userRooms).values({
       userId: userId,
       roomId: doc.id,
@@ -50,7 +47,6 @@ export async function createDocument() {
 
     console.log("Document created:", doc.id);
 
-    // Redirect directly to the new document
     revalidatePath("/");
     redirect(`/documents/${doc.id}`);
   } catch (error) {

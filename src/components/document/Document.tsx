@@ -17,7 +17,7 @@ import { useRouter } from "next/navigation";
 import LeaveRoomButton from "../doc-buttons/LeaveRoomButton";
 
 interface Props {
-  id: string; // document / room id
+  id: string;
   isOwner: boolean;
   userId: string;
 }
@@ -28,7 +28,7 @@ const Document = ({ id, isOwner, userId }: Props) => {
   const [role, setRole] = useState<"read" | "edit">(
     userInfo?.role as "read" | "edit"
   );
-  /* ─── Listen for doc events ────────── */
+
   useEventListener(({ event }) => {
     if (event.type === "DOCUMENT_DELETED") {
       if (event.userId !== userId) {

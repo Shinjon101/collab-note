@@ -113,9 +113,7 @@ export async function removeUserFromRoom(docId: string, targetId: string) {
     targetName,
   });
 }
-/* ──────────────────────────────────────────────
- *
- * ────────────────────────────────────────────── */
+
 export async function leaveRoom(docId: string, userId: string) {
   await db
     .delete(userRooms)

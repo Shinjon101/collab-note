@@ -27,5 +27,5 @@ export async function addUser() {
         clerkUser.lastName ||
         "Anonymous",
     })
-    .onConflictDoNothing(); // Make sure 'id' has a UNIQUE constraint
+    .onConflictDoNothing();
 }
