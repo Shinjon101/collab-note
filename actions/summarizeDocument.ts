@@ -26,22 +26,22 @@ export async function summarizeDocument(text: string, docId: string) {
     where: and(eq(summaries.userId, userId), gte(summaries.createdAt, today)),
   });
 
-  if (recentSummaries.length >= 5) {
+  /*   if (recentSummaries.length >= 5) {
     throw new Error("Daily limit reached. Try again tomorrow.");
-  }
+  } */
 
   const cohereRes = await cohere.chat({
-    model: "command",
+    model: "command-a-03-2025",
     temperature: 0.5,
     messages: [
       {
         role: "user",
         content: `You are a precise text compressor.
-        Condense the following text into a single clear passage under 200 words. Keep all key facts and intent.
+        Condense the following text into a single clear passage under 200 words. 
         Be direct, neutral, and factual.
         Text:${text}
-        Constraints:
-        Ensure the response is factual and straightforward, without any extraneous commentary or the word "summary".
+        Constraints: Do not use the word "summary" or any variations of "summarize." or "200"
+        Without any extraneous commentary.
         Avoid any introductory phrases, questions, or assistant-like responses in your output.
         Example: Original Text: "The cat sat on the mat. It was a sunny day, and the cat enjoyed the warmth."
         Condensed Output: "The cat rested on the mat, savoring the sunny warmth."  
