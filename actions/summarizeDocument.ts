@@ -26,9 +26,9 @@ export async function summarizeDocument(text: string, docId: string) {
     where: and(eq(summaries.userId, userId), gte(summaries.createdAt, today)),
   });
 
-  /*   if (recentSummaries.length >= 5) {
+  if (recentSummaries.length >= 5) {
     throw new Error("Daily limit reached. Try again tomorrow.");
-  } */
+  }
 
   const cohereRes = await cohere.chat({
     model: "command-a-03-2025",
