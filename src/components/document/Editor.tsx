@@ -9,6 +9,7 @@ import type { BlockNoteEditor } from "@blocknote/core";
 import * as Y from "yjs";
 import stringToColor from "@/lib/stringToColor";
 import { useEffect, useMemo, useState } from "react";
+import { useEditor } from "../providers/EditorContext";
 
 type BlockNoteProps = {
   doc: Y.Doc;
@@ -43,6 +44,14 @@ const BlockNote = ({ doc, provider, readOnly, userInfo }: BlockNoteProps) => {
       [provider, doc, userInfo]
     )
   );
+
+  const { setEditor } = useEditor();
+
+  useEffect(() => {
+    if (editor) {
+      setEditor(editor);
+    }
+  }, [editor]);
 
   return (
     <div className="min-h-screen pt-8">

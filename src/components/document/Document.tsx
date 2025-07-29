@@ -15,6 +15,8 @@ import { useSelf } from "@liveblocks/react";
 import { useEventListener } from "@liveblocks/react/suspense";
 import { useRouter } from "next/navigation";
 import LeaveRoomButton from "../doc-buttons/LeaveRoomButton";
+import { EditorProvider } from "../providers/EditorContext";
+import SumarizeButton from "../doc-buttons/SumarizeButton";
 
 interface Props {
   id: string;
@@ -104,7 +106,7 @@ const Document = ({ id, isOwner, userId }: Props) => {
   const hasUnsavedChanges = input.trim() !== originalTitle;
 
   return (
-    <>
+    <EditorProvider>
       {/* Title + actions */}
       <header className="mb-6">
         <form
@@ -142,14 +144,18 @@ const Document = ({ id, isOwner, userId }: Props) => {
 
       <hr className="mt-3 mb-5" />
 
-      <section className="mb-10" aria-label="Manage collaborators">
+      <section
+        className="mb-10 sticky top-0 z-20 bg-background flex justify-between items-center px-1 py-2 "
+        aria-label="Manage collaborators"
+      >
         <ManageUser />
+        <SumarizeButton documentId={id} />
       </section>
 
       <main aria-label="Document editor">
         <Editor readOnly={role === "read"} />
       </main>
-    </>
+    </EditorProvider>
   );
 };
 

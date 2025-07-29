@@ -60,6 +60,22 @@ export const documentCollaborators = pgTable(
   })
 );
 
+export const summaries = pgTable("summaries", {
+  id: serial("id").primaryKey(),
+
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+
+  documentId: text("document_id")
+    .notNull()
+    .references(() => documents.id, { onDelete: "cascade" }),
+
+  summary: text("summary").notNull(),
+
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Relations
 export const documentsRelations = relations(documents, ({ one }) => ({
   owner: one(users, {
@@ -89,6 +105,17 @@ export const userRoomsRelations = relations(userRooms, ({ one }) => ({
   }),
   document: one(documents, {
     fields: [userRooms.roomId],
+    references: [documents.id],
+  }),
+}));
+
+export const summariesRelations = relations(summaries, ({ one }) => ({
+  user: one(users, {
+    fields: [summaries.userId],
+    references: [users.id],
+  }),
+  document: one(documents, {
+    fields: [summaries.documentId],
     references: [documents.id],
   }),
 }));
