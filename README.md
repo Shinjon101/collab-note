@@ -2,22 +2,22 @@
 
 **CollabNote** is a modern collaborative note-taking app built with Next.js, Clerk for authentication, Liveblocks for real-time collaboration, and a rich block-based editor powered by BlockNote. Users can write, edit, and share notes in real time—with autosave and live cursors.
 
-💡 **AI summarization live now!**
+ **AI summarization live now!**
 
 ---
 
-## ✨ Features
+## Features
 
-- 🔐 Auth via [Clerk](https://clerk.dev) (Google and email)
-- 🧠 Rich text editor with [BlockNote](https://blocknotejs.org/)
-- 🤝 **Real-time collaboration** with [Liveblocks](https://liveblocks.io/)
-- 🧠 **AI-Powered Summarization** (select text → get a concise summary)
-- 🌙 Light/dark theme support via `next-themes`
-- ☁️ Ready for deployment on [Vercel](https://vercel.com)
+-  Auth via [Clerk](https://clerk.dev) (Google and email)
+-  Rich text editor with [BlockNote](https://blocknotejs.org/)
+-  **Real-time collaboration** with [Liveblocks](https://liveblocks.io/)
+-  **AI-Powered Summarization** (select text → get a concise summary)
+-  Light/dark theme support via `next-themes`
+-   Ready for deployment on [Vercel](https://vercel.com)
 
 ---
 
-## 🧱 Tech Stack
+##  Tech Stack
 
 - **Framework:** Next.js 15
 - **Styling:** Tailwind CSS
@@ -32,7 +32,7 @@
 
 ---
 
-## 📁 Folder Structure
+## Folder Structure
 
 ```
 src/
@@ -53,7 +53,7 @@ src/
 
 ---
 
-## 🚀 Getting Started (Development)
+## Getting Started (Development)
 
 1. **Clone the repo:**
 
@@ -94,14 +94,14 @@ src/
 
 ---
 
-## 🧠 AI Features 
+## AI Features 
 
-**✨ AI Summarization of notes**
+** AI Summarization of notes**
 select any text and generate a summary in seconds
 
 ---
 
-## 🚼 Tips Before Deploying
+##  Tips Before Deploying
 
 - ✅ Make sure you're using the production Liveblocks project key
 - ✅ Clear test data from your DB (via Neon console or Drizzle migrations)
@@ -110,7 +110,7 @@ select any text and generate a summary in seconds
 
 ---
 
-## 📦 Deployment
+##  Deployment
 
 Use [Vercel](https://vercel.com) to deploy:
 
@@ -122,7 +122,7 @@ Use [Vercel](https://vercel.com) to deploy:
 
 ---
 
-## 👤 Author
+##  Author
 
 Built with ❤️ by Shinjon — open to feedback and contributions.
 
